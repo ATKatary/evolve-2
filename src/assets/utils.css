@@ -1,0 +1,165 @@
+/***** Always True *****/
+@media only screen {
+    /*** General Purpose Display Styles ***/
+    .none {display: none;}
+    .flex {display: flex;}
+    .flex-row {flex-direction: row;}   
+    .padding-0 {padding: 0;}
+    .scroll {overflow: scroll;}
+    .hidden {visibility: hidden;}
+    .absolute {position: absolute;}
+    .text-start {text-align: start;}
+    .pointer:hover {cursor: pointer;}
+    .column {flex-direction: column;}
+    .text-center {text-align: center;}
+    .align-end {align-items: flex-end;}
+    .align-center {align-items: center;}
+    .word-break {word-wrap: break-word;}
+    .align-self-end {align-self: flex-end;}
+    .align-start {align-items: flex-start;}
+    .align-self-center {align-self: center;}
+    .justify-end {justify-content: flex-end;}
+    .justify-center {justify-content: center;}
+    .row-reverse {flex-direction: row-reverse;}
+    .align-self-start {align-self: flex-start;}
+    .justify-start {justify-content: flex-start;}
+    .justify-around {justify-content: space-around;}
+    .no-scrollbar::-webkit-scrollbar {display: none;}
+    .column-reverse {flex-direction: column-reverse;}
+    .justify-between {justify-content: space-between;}
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .none {display: none;}
+    .flex {display: flex;}
+    .wrap {flex-wrap: wrap;}
+    .padding-0 {padding: 0;}
+    .fixed {position: fixed;}
+    .scroll {overflow: scroll;}
+    .hidden {visibility: hidden;}
+    .relative {position: relative;}
+    .absolute {position: absolute;}
+    .text-start {text-align: start;}
+    .pointer:hover {cursor: pointer;}
+    .column {flex-direction: column;}
+    .text-center {text-align: center;}
+    .align-end {align-items: flex-end;}
+    .align-center {align-items: center;}
+    .word-break {word-wrap: break-word;}
+    .align-self-end {align-self: flex-end;}
+    .align-start {align-items: flex-start;}
+    .align-self-center {align-self: center;}
+    .justify-end {justify-content: flex-end;}
+    .justify-center {justify-content: center;}
+    .row-reverse {flex-direction: row-reverse;}
+    .align-self-start {align-self: flex-start;}
+    .justify-start {justify-content: flex-start;}
+    .justify-around {justify-content: space-around;}
+    .no-scrollbar::-webkit-scrollbar {display: none;}
+    .column-reverse {flex-direction: column-reverse;}
+    .justify-between {justify-content: space-between;}
+    .no-scrollbar {-ms-overflow-style: none;scrollbar-width: none;}
+    .no-border {border: none !important;}
+
+    /*** Widths ***/
+    .width-100 {width: 100%;}
+    .width-fit {width: fit-content;}
+
+    /*** Heights ***/
+    .height-100 {height: 100vh;}
+    .height-max {height: 100%;}
+
+    /*** Shapes ***/
+    .circle {border-radius: 50%;}
+
+    /*** Paddings ***/
+    .padding-30px {padding: 30px;}
+
+    /*** Margins ***/
+    .margin-0 {margin: 0;}
+
+    .margin-30px {margin: 30px;}
+
+    .margin-40px {margin: 40px;}
+
+    .margin-top-20px {margin-top: 20px;}
+
+    .margin-bottom-20px {margin-bottom: 20px;}
+
+    .overflow-auto {overflow: auto;}
+    .overflow-auto {overflow: hidden;}
+    .no-scrollbar {scrollbar-width: none;}
+    .text-overflow-ellipsis {text-overflow: ellipsis; text-wrap: nowrap;}
+    .text-overflow-clip {text-overflow: clip; text-wrap: nowrap;}
+
+    /*** Colors ***/
+    .black {color: #000;}
+
+    .white {color: #fff;}
+
+    /*** Opacities ***/
+
+    /*** Fonts ***/
+
+    /*** Text Styles ***/
+
+    /*** Background Color Gradients ***/
+    .green {background: linear-gradient(180deg, #39CBB9 0%, #5BFE9E 100%);}
+
+    .yellow {background: linear-gradient(225deg, #FBFF3C 0%, #DCD531 88.84%)}
+
+    .red {background: linear-gradient(225deg, #F78888 0%, #DA6767 88.84%);}
+
+    .blue {background: linear-gradient(225deg, #91FFFF 0%, #87E9FF 88.84%);}
+
+    .orange {background: linear-gradient(225deg, #D69334 0%, #FD8F3C 88.84%);}
+
+    .purple {background: linear-gradient(269.15deg, #C183F2 4.11%, #E5B2FF 96.97%);}
+
+    /*** Shadows ***/
+
+    /*** Rotations ***/
+
+    /*** Squares ***/
+
+    /*** Font Families ***/
+
+    /*** Element Styles ***/
+    input {
+        padding: 5px !important;
+        height: 30px !important;
+    }
+
+    /*** Class Styles ***/
+    .clicked:active {
+        opacity: 80%;
+    }
+
+    .input-no-focus:focus {
+        outline: none !important;
+        border: none;
+        box-shadow: none;
+    }
+
+    .appear-on-hover {
+        opacity: 0;
+    }
+    .appear-on-hover:hover {
+        opacity: 1;
+    }
+
+    .step-title {
+        max-width: 100px;
+        padding: 0 !important;
+        height: auto !important;
+        font-size: 16px !important;
+    }
+    /*** MUI Override (DANGEROUS!) ***/
+}
+
+/***** > 1000px *****/
+@media only screen and (min-width: 1000px) {}
+
+/***** <= 1000px *****/
+@media only screen and (max-width: 1000px) {}
