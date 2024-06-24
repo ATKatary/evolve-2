@@ -12,15 +12,16 @@ import { contentType } from "../types";
 import "../assets/utils.css";
 
 function Doc({...props}) {
-    let {style, className, content, onChange, i, edit, ...rest} = props;
+    let {style, className, data, content, onChange, i, edit, ...rest} = props;
     content = content as contentType;
 
     return (
         <Editor 
             edit={edit}
+            data={data}
+            style={style}
             content={content}
             onChange={onChange} 
-            data={content?.data}
             editorBlock={`editorjs-container-${i}`}
         />
     )

@@ -9,24 +9,18 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 import "../assets/utils.css";
 import { styles } from "../styles";
-import { fieldType } from "../types";
+import { fieldType, selectMenuOptionType } from "../types";
 import { COLORS, THEME } from "../constants";
 import CustomTable from "../components/table";
-import { camelize, useCustomState } from "../utils";
+import { camelize, nullify, useCustomState } from "../utils";
 import { CheckBoxField, FormField, SelectField } from "../forms/fields";
 
 
 function AdminPanel<T>({...props}) {
-    const {style, className, rows, fields, show} = props;
+    const {style, className, rows, fields, saveRow, createRow, show} = props;
 
     const [newRow, setNewRow] = useCustomState<T>({} as T);
     const [addRow, setAddRow] = React.useState<boolean>(false);
-
-    const saveRow = async (id: string, data: T) => {
-    }
-
-    const createRow = async () => {
-    }
 
     const deleteRow = async (id: string) => {
     }
@@ -35,7 +29,7 @@ function AdminPanel<T>({...props}) {
         <div className={`width-100 flex align-center column justify-start ${className || ""}`} style={{...style}}>
             <div 
                 className="flex justify-between align-center" 
-                style={{...styles.adminHeaderStyle}}
+                style={{...styles.adminHeaderStyle() as React.CSSProperties}}
             >
                 <IconButton style={{height: 40, width: 40}} onClick={() => setAddRow(true)}>
                     <AddIcon sx={{color: COLORS.LIGHT_GRAY}}/>
@@ -52,12 +46,12 @@ function AdminPanel<T>({...props}) {
                     <AdminPanelRow 
                         editAll
                         id="newRow"
-                        row={newRow}
+                        data={newRow}
                         fields={fields}
-                        saveRow={createRow}
                         style={{width: "80%"}}
                         fieldStyle={{border: `1px solid ${THEME.ACTIVE_ACCENT}`}}
                         deleteRow={(id: string) => {setNewRow(null); setAddRow(false)}}
+                        saveRow={(data: T) => {createRow(data); setNewRow({} as T); setAddRow(false)}}
                     /> 
                 : <></>}
                 <CustomTable 
@@ -67,10 +61,10 @@ function AdminPanel<T>({...props}) {
                             i={i}
                             id={id}
                             key={id}
-                            row={row}
+                            data={row}
                             fields={fields}
-                            saveRow={saveRow}
                             deleteRow={deleteRow}
+                            saveRow={(data: T) => saveRow? saveRow(id, data) : null}
                         />
                     }
                     backgroundColor={THEME.BACKGROUND_ACCENT}
@@ -85,10 +79,11 @@ function AdminPanel<T>({...props}) {
 export default AdminPanel;
 
 function AdminPanelRow<T>({...props}) {
-    let {i, id, row, style, className, fieldStyle, deleteRow, saveRow, fields, editAll, ...rest} = props;
+    let {i, id, data, style, className, fieldStyle, deleteRow, saveRow, fields, editAll, ...rest} = props;
     
-    row = row as T;
+    data = data as T;
     fields = fields as fieldType[]
+    const [row, setRow] = useCustomState<any>(data)
     const [edit, setEdit] = React.useState<boolean>(false);
 
     return (
@@ -99,21 +94,29 @@ function AdminPanelRow<T>({...props}) {
             className={`flex align-center justify-between ${className || ""}`}
         >
             <Typography fontSize={THEME.FONT.PARAGRAPH} style={{width: 40, display: "flex", justifyContent: "center"}}>{typeof i === "number"? i + 1 : 0}</Typography>
-            {fields?.map((field: fieldType, i: number) => 
-                getField(field, {
+            {fields?.map((field: fieldType, i: number) => {
+                return getField(field, {
+                    rowId: id,
+                    setRow: async (data: any) => {
+                        const updatedRow = row;
+                        updatedRow[camelize(field.name)] = field.onChange? await field.onChange(row, data) : data;
+
+                        setRow(updatedRow)
+                    },
                     disabled: !edit,
                     id: `${id}-${i}`,
                     key: `${id}-${i}`, 
                     options: field.options,
                     editAll: editAll || false,
-                    value: row[camelize(field.name)],
+                    multiple: field.type === "multiSelect",
                     inputStyle: {fontSize: 12, height: 40},
                     fieldStyle: {...fieldStyle, ...field.style},
+                    value: row? row[camelize(field.name)] : undefined,
                 })
-            )}
+            })}
             <div>
                 {editAll || edit?
-                    <IconButton style={{height: 40, width: 40}} onClick={() => {setEdit(false); saveRow(id, row)}}>
+                    <IconButton style={{height: 40, width: 40}} onClick={() => {setEdit(false); saveRow(row)}}>
                         <SaveIcon sx={{color: COLORS.LIGHT_GRAY}}/>
                     </IconButton>
                     :
@@ -130,7 +133,7 @@ function AdminPanelRow<T>({...props}) {
 }
 
 function getField(field: fieldType, {...props}) {
-    let {key, disabled, fieldStyle, multiple, className, options, editAll, value, ...rest} = props;
+    let {rowId, setRow, key, disabled, fieldStyle, multiple, className, options, editAll, value, ...rest} = props;
     
     switch (field.type) {
         case "text": 
@@ -142,26 +145,30 @@ function getField(field: fieldType, {...props}) {
                     variant="outlined" 
                     placeholder={field.name}
                     className={`${className || ""}`}
-                    style={{...styles.formField, ...fieldStyle}}
+                    style={{...styles.formField(), ...fieldStyle}}
+                    onChange={async (event: any) => setRow(event.target.value)}
                     disabled={editAll? false : (field.editable? disabled : true)}
                     inputStyle={{fontSize: THEME.FONT.PARAGRAPH, borderRadius: "5px"}}
                 />
             )
+        case "multiSelect":
         case "select":
             return (
                 <SelectField 
                     key={key}
-                    value={value}
                     options={options}
+                    multiple={multiple}
+                    value={value? value : (multiple? [] : "")}
+                    onChange={async (event: any) => setRow(event.target.value)}
                     disabled={editAll? false : (field.editable? disabled : true)}
-                    style={{...styles.formField, ...styles.adminSelect, width: 275, ...fieldStyle}}
+                    style={{...styles.formField(), ...styles.adminSelect(), width: 275, ...fieldStyle}}
                 />
             )
         case "total":
             return (
                 <div 
                     key={key}
-                    style={{...styles.formField, ...fieldStyle, textAlign: "center", opacity: 0.5, border: "none"}}
+                    style={{...styles.formField(), ...fieldStyle, textAlign: "center", opacity: 0.5, border: "none"}}
                 >
                     {value?.length || 0}
                 </div>
@@ -171,8 +178,9 @@ function getField(field: fieldType, {...props}) {
                 <CheckBoxField 
                     key={key}
                     checked={value} 
+                    onChange={async (event: any) => setRow(event.target.checked)}
                     disabled={editAll? false : (field.editable? disabled : true)}
-                    style={{...styles.formField, ...styles.adminSelect, ...fieldStyle, border: "none"}}
+                    style={{...styles.formField(), ...styles.adminSelect(), ...fieldStyle, border: "none"}}
                 />
             )
         default: return <></>

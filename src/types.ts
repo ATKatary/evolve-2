@@ -1,3 +1,4 @@
+import { SxProps } from "@mui/material";
 import { DocumentReference } from "firebase/firestore";
 import React, { MouseEventHandler } from "react";
 
@@ -24,6 +25,10 @@ export type loginInfoType = {
     status: number
     message: string
     loggedIn: boolean
+    type: "signup" | "login"
+    
+    name: string 
+    nameMessage: string 
     
     email: string
     emailMessage: string
@@ -39,6 +44,24 @@ export type loginInfoType = {
 };
 
 /*** Utility ***/
+export type emailMessageType = {
+    subject: string
+    html: string 
+    text?: string
+}
+
+export type emailType = {
+    to?: string[] | string 
+    toUids?: string[]
+    
+    cc?: string[]
+    ccUids?: string[]
+    
+    bcc?: string[]
+    bccUids?: string[]
+    message: emailMessageType 
+}
+
 export type selectMenuOptionType = {
     name: string
     style?: React.CSSProperties
@@ -47,9 +70,10 @@ export type selectMenuOptionType = {
 
 export type fieldType = {
     name: string 
-    editable: boolean 
-    style: React.CSSProperties
-    type: "text" | "select" | "multiSelect" | "checkbox" | "total"
+    editable?: boolean 
+    onChange?: CallableFunction
+    style?: React.CSSProperties
+    type: "text" | "select" | "multiSelect" | "checkbox" | "total" 
     
     options: selectMenuOptionType[]
 }
@@ -108,6 +132,13 @@ export type programType = {
     modules: DocumentReference[]
 }
 
+export type studentProgressType = {
+    id?: string 
+    name?: string 
+    progress: number
+    children?: studentProgressType[]
+}
+
 export type moduleType = {
     icon: any
     name: string 
@@ -129,7 +160,7 @@ export type entryType = {
     contents: contentType[]
 }
 
-export type contentTypes = "text" | "select" | "multiSelect" | "rank"
+export type contentTypes = "text" | "select" | "multiSelect" | "rank" | "rate" | "prompt" | "email"
 
 export type contentType = {
     data: any 
@@ -141,3 +172,31 @@ export type responseType = {
     id: string 
     response: any
 }
+
+export type stylesType = {
+    tabs: ((...args: any) => (React.CSSProperties | SxProps))
+    title: ((...args: any) => (React.CSSProperties | SxProps))
+    button: ((...args: any) => (React.CSSProperties | SxProps))
+    tabLabel: ((...args: any) => (React.CSSProperties | SxProps))
+    formField: ((...args: any) => (React.CSSProperties | SxProps))
+    adminPanel: ((...args: any) => (React.CSSProperties | SxProps))
+    adminTable: ((...args: any) => (React.CSSProperties | SxProps))
+    stepButton: ((...args: any) => (React.CSSProperties | SxProps))
+    entryButton: ((...args: any) => (React.CSSProperties | SxProps))
+    adminSelect: ((...args: any) => (React.CSSProperties | SxProps))
+    entryHeader: ((...args: any) => (React.CSSProperties | SxProps))
+    promptEntry: ((...args: any) => (React.CSSProperties | SxProps))
+    tabIndicator: ((...args: any) => (React.CSSProperties | SxProps))
+    entryDivider: ((...args: any) => (React.CSSProperties | SxProps))
+    tabDeleteButton: ((...args: any) => (React.CSSProperties | SxProps))
+    customTableCell: ((...args: any) => (React.CSSProperties | SxProps))
+    navigationButton: ((...args: any) => (React.CSSProperties | SxProps))
+    testimonialImage: ((...args: any) => (React.CSSProperties | SxProps))
+    adminHeaderStyle: ((...args: any) => (React.CSSProperties | SxProps))
+    saveContentButton: ((...args: any) => (React.CSSProperties | SxProps))
+    adminHeaderButton: ((...args: any) => (React.CSSProperties | SxProps))
+    moveContentButton: ((...args: any) => (React.CSSProperties | SxProps))
+    deleteContentButton: ((...args: any) => (React.CSSProperties | SxProps))
+    programHeaderButton: ((...args: any) => (React.CSSProperties | SxProps))
+    sidebarSectionButton: ((...args: any) => (React.CSSProperties | SxProps))
+} 

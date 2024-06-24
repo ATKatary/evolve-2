@@ -5,7 +5,7 @@ import { CoachInterface } from "../interfaces";
 import { DocumentReference, getDoc } from "firebase/firestore";
 import { interfaceStateType, moduleType, objWithId, programType, userType } from "../types";
 import { OutputData } from "@editorjs/editorjs";
-import { saveToCollection } from "../api/firebase";
+import { getFromCollection, saveToCollection } from "../api/firebase";
 
 export class Coach extends GenericClass<any> implements CoachInterface {
     collectionId = "users"
@@ -73,14 +73,28 @@ export class Coach extends GenericClass<any> implements CoachInterface {
         return programs;
     }
 
-    async getStudents(): Promise<objWithId<string>[]> {
-        const students: objWithId<string>[] = [];
+    async getStudents(): Promise<objWithId<any>[]> {
+        const students: objWithId<any>[] = [];
 
         for (const student of this.students) {
             const studentData = (await getDoc(student)).data() as userType
-            students.push([student.id, studentData.name])
+            students.push([student.id, studentData])
         }
         return students;
+    }
+
+    static async removeStudent(id: string, studentId: string): Promise<boolean> {
+        const coach = await getFromCollection(id, "users") as any;
+        if (coach) {
+            let studentRemoved = true;
+            if (coach.students.find((studentRef: DocumentReference) => studentRef.id === studentId)) {
+                studentRemoved = await saveToCollection(id, "users", {students: coach.students.filter((studentRef: DocumentReference) => studentRef.id !== studentId)}, {});
+            }
+
+            return studentRemoved;
+        }
+
+        return false;
     }
 }
 
@@ -95,7 +109,7 @@ export function useCoach(id?: string) {
     [coach.programs, coach.setPrograms] = React.useState<DocumentReference[]>([]);
     [coach.modules, coach.setModules] = React.useState<DocumentReference[]>([]);
 
-    const [students, setStudents] = React.useState<objWithId<string>[]>([]);
+    const [students, setStudents] = React.useState<objWithId<any>[]>([]);
     const [modules, setModules] = React.useState<objWithId<moduleType>[]>([]);
     const [programs, setPrograms] = React.useState<objWithId<programType>[]>([]);
 
@@ -133,5 +147,5 @@ export function useCoach(id?: string) {
         }
     }, [coach.students])
     
-    return {coach, modules, setModules, programs, setPrograms, students}
+    return {coach, modules, setModules, programs, setPrograms, students, setStudents}
 }

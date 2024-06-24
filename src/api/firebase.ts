@@ -1,8 +1,8 @@
 import { getAuth } from "firebase/auth";
 import { initializeApp } from "firebase/app";
-import { getStorage } from "firebase/storage";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { DocumentReference, addDoc, collection, doc, getDoc, getDocs, getFirestore, limit, onSnapshot, query, setDoc } from "firebase/firestore";
-import { objWithId } from "../types";
+import { emailType, objWithId } from "../types";
 
 const firebaseConfig = {
     apiKey: "AIzaSyB5O6TbLD-tqCErc1LAS-HwymQziaYfjWA",
@@ -20,6 +20,13 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const multiMediaStorage = getStorage(app);
+
+export async function saveToStorage(id: string, storageId: string, file: Blob | Uint8Array | ArrayBuffer, metadata?: any) {
+    const storageRef = ref(multiMediaStorage, `${storageId}/${id}`);
+
+    const uploadTask = await uploadBytes(storageRef, file, metadata);
+    return await getDownloadURL(uploadTask.ref)
+}
 
 export function watchDoc(
     id: string, 
@@ -82,21 +89,26 @@ export async function getOrCreate<T>(id: string, collectionId: string, defaultDa
 
 export async function getFromCollection<T>(id: string, collectionId: string, createIfDoesNotExist?: boolean, getRef?: boolean): Promise<[T, DocumentReference] | T | null> {
     // console.log(`[firebase][getFromCollection] >> getting ${id} from ${collectionId}....`);
+    try {
+        const docRef = doc(db, collectionId, id);
+        const docSnap = await getDoc(docRef);
 
-    const docRef = doc(db, collectionId, id);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-        if (getRef) return [docSnap.data() as T, docRef]
-        return docSnap.data() as T;
-    } else if (createIfDoesNotExist) {
-        await saveToCollection(id, collectionId, {}, {});
-    } return null;
+        if (docSnap.exists()) {
+            if (getRef) return [docSnap.data() as T, docRef]
+            return docSnap.data() as T;
+        } else if (createIfDoesNotExist) {
+            await saveToCollection(id, collectionId, {}, {});
+        } return null;
+    } catch (e) {
+        console.error(e)
+        return null;
+    }
 }
 
 export async function saveToCollection(id: string, collectionId: string, data: any, {...options}): Promise<boolean> {
-    const docRef = doc(db, collectionId, id);
     try {
+        const docRef = doc(db, collectionId, id);
+
         await setDoc(docRef, data, {merge: true, ...options});
         return true;
     } catch (e) {
@@ -105,8 +117,15 @@ export async function saveToCollection(id: string, collectionId: string, data: a
     }
 } 
 
-export async function getCollection<T>(id: string): Promise<objWithId<T>> {
+export async function getCollection<T>(id: string): Promise<objWithId<T>[]> {
     const collectionRef = collection(db, id);
 
-    return (await getDocs(query(collectionRef, limit(500)))).docs.map((snapshot) => [snapshot.id, snapshot.data() as T]) as objWithId<T>;
+    return (await getDocs(query(collectionRef, limit(500)))).docs.map((snapshot) => [snapshot.id, snapshot.data() as T]);
+}
+
+export async function sendEmail(email: emailType): Promise<boolean> {
+    const collectionRef = collection(db, "mail");
+    console.log(email)
+    const emailDoc = await addDoc(collectionRef, email)
+    return emailDoc.id? true : false;
 }

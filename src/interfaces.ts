@@ -1,5 +1,5 @@
 import { DocumentReference } from "firebase/firestore"
-import { interfaceStateType, objWithId, userType } from "./types"
+import { interfaceStateType, objWithId, studentProgressType, userType } from "./types"
 
 export interface GenericClassInterface<T> {
     state: interfaceStateType
@@ -24,6 +24,7 @@ export interface AuthInterface {
     updatePassword(password : string): Promise<any>
     login(email: string, password: string): Promise<any>
     sendResetPasswordEmail(email : string): Promise<any>
+    signup(email: string, password: string, name: string): Promise<any>
     initialize(name?: string): Promise<GenericClassInterface<userType> | null | null>
 }
 
@@ -32,8 +33,7 @@ export interface StudentInterface extends GenericClassInterface<userType> {
 
     coach: objWithId<DocumentReference> | null
     programs: objWithId<DocumentReference>[]
-
-    assign(coachRef: DocumentReference): Promise<boolean>
+    progress: studentProgressType[]
 }   
 
 export interface CoachInterface extends GenericClassInterface<userType> {

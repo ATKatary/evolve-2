@@ -14,7 +14,7 @@ function CustomTable({...props}) {
                 <TableRow>
                     <TableCell 
                         style={{
-                            ...styles.customTableCell,
+                            ...styles.customTableCell(),
                             fontSize: 24,
                             color: other.color, 
                             ...other.titleStyle
@@ -28,7 +28,7 @@ function CustomTable({...props}) {
                 <TableRow>
                     <TableCell 
                         style={{
-                            ...styles.customTableCell, 
+                            ...styles.customTableCell(), 
                             padding: "10px 0",
                             ...other.headerStyle
                         }}
@@ -45,7 +45,7 @@ function CustomTable({...props}) {
                     className={other.rowClassName}
                     sx={{'&:last-child td, &:last-child th': { border: 0 }, color: other.color}}
                 >
-                    <TableCell style={{...styles.customTableCell}}>{cells(row, i)}</TableCell>
+                    <TableCell style={{...styles.customTableCell() as React.CSSProperties}}>{cells(row, i)}</TableCell>
                 </TableRow>
             ))}
             </TableBody>

@@ -1,61 +1,50 @@
-import * as React from 'react';
-import { styled } from '@mui/material/styles';
-import Rating, { IconContainerProps } from '@mui/material/Rating';
-import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
-import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
-import SentimentSatisfiedIcon from '@mui/icons-material/SentimentSatisfied';
-import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAltOutlined';
-import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
+import * as React from "react";
+import { arrayMoveImmutable } from "array-move";
+import { Container, Draggable } from "react-smooth-dnd";
+import DragHandleIcon from "@mui/icons-material/DragHandle";
+import { List, ListItem, ListItemText, ListItemSecondaryAction, ListItemIcon } from "@mui/material";
+import { COLORS, THEME } from "../constants";
+import { styles } from "../styles";
+import { StyledInput } from "../support";
 
-const StyledRating = styled(Rating)(({ theme }) => ({
-    '& .MuiRating-iconEmpty .MuiSvgIcon-root': {
-        color: theme.palette.action.disabled,
-    },
-}));
+type itemType = {id: string, text: string}
+export function Rank({...props}) {
+    let {edit, data, onRankChange, onInputChange, ...rest} = props;
+    
+    const [items, setItems] = React.useState<itemType[]>(data);
 
-const customIcons = (style: React.CSSProperties): {
-    [index: string]: {
-        icon: React.ReactElement;
-        label: string;
-    }} => ({
-        1: {
-            icon: <SentimentVeryDissatisfiedIcon color="error" sx={{...style}}/>,
-            label: 'Very Dissatisfied',
-        },
-        2: {
-            icon: <SentimentDissatisfiedIcon color="error" sx={{...style}}/>,
-            label: 'Dissatisfied',
-        },
-        3: {
-            icon: <SentimentSatisfiedIcon color="warning" sx={{...style}}/>,
-            label: 'Neutral',
-        },
-        4: {
-            icon: <SentimentSatisfiedAltIcon color="success" sx={{...style}}/>,
-            label: 'Satisfied',
-        },
-        5: {
-            icon: <SentimentVerySatisfiedIcon color="success" sx={{...style}}/>,
-            label: 'Very Satisfied',
-        },
-    }
-);
+    const onDrop = ({ removedIndex, addedIndex }: {removedIndex: number, addedIndex: number}) => {
+        setItems(items => arrayMoveImmutable(items, removedIndex, addedIndex))
+    };
 
-const IconContainer = (style: React.CSSProperties) => function (props: IconContainerProps) {
-    const { value, ...other } = props;
-    return <span {...other}>{customIcons(style)[value].icon}</span>;
-}
-
-export default function Rank({...props}) {
-    const {style, ...rest} = props;
-
+    React.useEffect(() => {
+        if (!edit) return
+        if (onInputChange) onInputChange(items);
+        if (onRankChange) onRankChange(items)
+    }, [items])
     return (
-        <StyledRating
-            {...props}
-            highlightSelectedOnly
-            
-            IconContainerComponent={IconContainer(style)}
-            getLabelText={(value: number) => customIcons(style)[value].label}
-        />
+        <List className="width-100" style={{padding: 0}}>
+        <Container dragHandleSelector=".drag-handle" lockAxis="y" onDrop={onDrop} className="width-100">
+            {items?.map(({ id, text }: itemType, i: number) => (
+                <Draggable key={id}>
+                    <ListItem>
+                        <StyledInput 
+                            value={text}
+                            disabled={!edit} 
+                            placeholder={`Statement ${i}`}
+                            className={`${edit? "pointer" : ""}`}
+                            style={{...styles.entryHeader(edit), textAlign: "start", width: "calc(100% - 24px)", backgroundColor: COLORS.WHITE}} 
+                            onChange={(value: string) => setItems(items.map((item: itemType) => item.id === id? {...item, text: value} : item))}
+                        />
+                        <ListItemSecondaryAction>
+                            <ListItemIcon className={`drag-handle ${edit? "pointer" : ""} flex justify-end`}>
+                                <DragHandleIcon />
+                            </ListItemIcon>
+                        </ListItemSecondaryAction>
+                    </ListItem>
+                </Draggable>
+            ))}
+        </Container>
+        </List>
     );
-}
+};

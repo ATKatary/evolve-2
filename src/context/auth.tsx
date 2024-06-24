@@ -5,8 +5,8 @@ import { Coach } from "../classes/coach";
 import { Student } from "../classes/student";
 import { AuthInterface } from "../interfaces";
 import { AuthContextType } from "../providers";
-import { auth, getOrCreate } from "../api/firebase";
-import { onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { auth, getOrCreate, saveToCollection } from "../api/firebase";
+import { createUserWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signOut } from "firebase/auth";
 
 const DEFAULT_ROLE = "student"
 const USER_COLLECTION_ID = "users";
@@ -81,6 +81,13 @@ export class Auth implements AuthInterface {
         try {
             await signInWithEmailAndPassword(auth, email, password);
             // await this.initialize();
+        } catch (error) {return error}
+    }
+
+    async signup(email: string, password: string, name: string): Promise<any> {
+        try {
+            const user = await createUserWithEmailAndPassword(auth, email, password);
+            await saveToCollection(user.user.uid, USER_COLLECTION_ID, {name: name, email: email, role: DEFAULT_ROLE}, {})
         } catch (error) {return error}
     }
 }

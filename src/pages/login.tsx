@@ -15,7 +15,7 @@ import { Notification } from "../support";
 import { Coach } from "../classes/coach";
 import { Student } from "../classes/student";
 import { COLORS, THEME } from "../constants";
-import { checkPassword, login } from "../api/user";
+import { checkPassword, login, signup } from "../api/user";
 import { FormField, PassFormField } from "../forms/fields";
 import { addToLocalStorage, getDevOrDepUrl, useCustomState, validateEmail, validatePassword } from "../utils";
 
@@ -24,7 +24,7 @@ function Login({...props}) {
     const auth = useAuth();
     const navigate = useNavigate();
     const notification = React.useContext(NotificationContext);
-    const [loginInfo, setLoginInfo] = useCustomState<loginInfoType>({});
+    const [loginInfo, setLoginInfo] = useCustomState<loginInfoType>({type: "login"});
 
     React.useEffect(() => {
         const loginWrapper = async () => {
@@ -52,10 +52,12 @@ function Login({...props}) {
         checkPassword(auth, setLoginInfo);
     }, [auth?.isAuthenticated])
 
-    const validateForm = async (login: boolean = true) => {
+    const validateForm = async (login: boolean = true, createUser: boolean = false) => {
         if (!validateEmail(loginInfo.email)) setLoginInfo({status: 403, emailMessage: "Invalid email"});
         else if (!validatePassword(loginInfo.password)) setLoginInfo({status: 403, passMessage: "Password too short", emailMessage: null});
         else if (login) setLoginInfo({status: 200, emailMessage: null, passMessage: null});
+        else if (loginInfo.type === "signup" && !loginInfo.name) setLoginInfo({status: 403, emailMessage: "Please enter your name"});
+        else if (createUser) await signup(auth, loginInfo, setLoginInfo);
         else setLoginInfo({emailMessage: null, passMessage: null});
     }
 
@@ -65,27 +67,53 @@ function Login({...props}) {
                 <img src={logo} height="75px" className="margin-top-20px pointer"></img>
             </div>
             <>
+            {loginInfo.type === "signup"? 
+                <>
+                    <FormField 
+                        variant="outlined" 
+                        placeholder="Name"
+                        style={{...styles.formField()}} 
+                        value={loginInfo.name || ""}
+                        helperText={loginInfo.nameMessage}
+                        inputStyle={{border: `1px solid ${COLORS.WHITE}`, borderRadius: "5px", height: 40}}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setLoginInfo({name: event.target.value}); validateForm(false)}}
+                    />
+                </>
+                :
+                <></>
+            
+            }
             <FormField 
                 variant="outlined" 
-                placeholder="Username"
-                style={{...styles.formField}} 
+                placeholder="Email"
+                style={{...styles.formField()}} 
                 value={loginInfo.email || ""}
                 helperText={loginInfo.emailMessage}
-                inputStyle={{border: `1px solid ${COLORS.WHITE}`, borderRadius: 5}}
+                inputStyle={{border: `1px solid ${COLORS.WHITE}`, borderRadius: "5px", height: 40}}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setLoginInfo({email: event.target.value}); validateForm(false)}}
             />
             
             <PassFormField 
                 variant="outlined" 
-                style={{...styles.formField}} 
+                style={{...styles.formField()}} 
                 // adornmentColor={COLORS.WHITE}
                 value={loginInfo.password || ""}
                 helperText={loginInfo.passMessage}
-                inputStyle={{border: `1px solid ${COLORS.WHITE}`, borderRadius: 5}}
+                inputStyle={{border: `1px solid ${COLORS.WHITE}`, borderRadius: "5px", height: 40}}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {setLoginInfo({password: event.target.value}); validateForm(false)}}
             />
     
-            <Button sx={{...styles.button}} variant="contained" onClick={() => validateForm()}>Login</Button>
+            {loginInfo.type === "signup"?
+                <Button sx={{...styles.button()}} variant="contained" onClick={() => validateForm(false, true)}>Signup</Button>
+                :
+                <Button sx={{...styles.button()}} variant="contained" onClick={() => validateForm()}>Login</Button>
+            }
+            <Button 
+                sx={{...styles.button(true), color: COLORS.LIGHT_GRAY, backgroundColor: COLORS.TRANSPARENT}} 
+                onClick={() => {setLoginInfo({type: loginInfo.type === "signup"? "login" : "signup"})}}
+            >
+                {loginInfo.type === "signup"? "Login" : "Signup"}
+            </Button>
             </>
             
             <Notification notification={notification?.notification} setNotification={notification?.setNotification} duration={6000}/>

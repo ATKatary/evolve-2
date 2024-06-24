@@ -8,10 +8,10 @@ import { ThemeProvider, createTheme } from '@mui/material';
 
 import './index.css';
 import { THEME } from './constants';
-import Landing from './pages/login';
+import Login from './pages/login';
 import AdminPage from './pages/admin';
 import CoachPage from './pages/coach';
-import { useCustomState } from './utils';
+import { getDevOrDepUrl, useCustomState } from './utils';
 import StudentPage from './pages/student';
 import { AuthProvider } from './context/auth';
 import { LoadingContextType, NotificationContextType, NotificationType, loadingType } from './types';
@@ -39,10 +39,10 @@ function App({...props}) {
         <ThemeProvider theme={theme}>
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<Landing />} />
-              <Route path="/admin" element={<AdminPage />} />
-              <Route path="/coach" element={<CoachPage />} />
-              <Route path="/student" element={<StudentPage />} />
+              <Route path={getDevOrDepUrl("evolve") || "/"} element={<Login />} />
+              <Route path={getDevOrDepUrl("admin") || "/admin"} element={<AdminPage />} />
+              <Route path={getDevOrDepUrl("coach") || "/coach"} element={<CoachPage />} />
+              <Route path={getDevOrDepUrl("student") || "/student"} element={<StudentPage />} />
             </Routes>
           </BrowserRouter>
         </ThemeProvider>

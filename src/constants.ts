@@ -1,10 +1,17 @@
 import List from "@editorjs/list";
 import Link from "@editorjs/link";
 import Header from "@editorjs/header";
+import ImageTool from '@editorjs/image';
 import Paragraph from "@editorjs/paragraph";
+import VideoTool from "@weekwood/editorjs-video";
 
-import { Image } from "./components/plugins/image";
-import { fieldType, selectMenuOptionType } from "./types"
+
+import { contentTypes, fieldType, selectMenuOptionType } from "./types"
+import { Student } from "./classes/student";
+import { Coach } from "./classes/coach";
+import { db, getFromCollection, saveToStorage } from "./api/firebase";
+import { doc } from "firebase/firestore";
+import { makeId } from "./utils";
 
 export const API = {
     GET: "get",
@@ -43,11 +50,13 @@ export const REGEX = {
 export const FIELDS = {
     BASE: [
         {name: "Name", type: "text", editable: true, style: {width: 150}} as fieldType,
-        {name: "Email", type: "text", editable: false, style: {width: 200}} as fieldType,
+        {name: "Email", type: "text", editable: false, style: {width: 150}} as fieldType,
     ],
 
     STUDENTS: (coaches?: selectMenuOptionType[], programs?: selectMenuOptionType[]) => [
-        {name: "Coach", type: "select", editable: true, style: {width: 150}, options: coaches} as fieldType,
+        {name: "ParentalEmail", type: "text", editable: true, style: {width: 150}} as fieldType,
+        {name: "Coach", type: "select", editable: true, options: coaches, style: {width: 150}} as fieldType,
+        {name: "Programs", type: "multiSelect", editable: true, options: programs, style: {width: 150}} as fieldType,
     ],
 
     COACHES: (students?: selectMenuOptionType[]) => [
@@ -67,6 +76,99 @@ export const EDITOR_JS_TOOLS = {
         class: List,
         inlineToolbar: true,
     },
-    header: Header,
-    // image: Image
+    header: {
+        class: Header,
+        inlineToolbar: true,
+    },
+    video: {
+        class: VideoTool,
+        inlineToolbar: true,
+        config: {
+            endpoints: {
+                byFile: '', // Your backend file uploader endpoint
+                byUrl: '', // Your endpoint that provides uploading by Url
+            },
+            player: {
+                controls: true,
+                autoplay: false
+            },
+            uploader: {
+                async uploadByFile(file: any) {
+                    console.log("uploading...", file.type)
+
+                    return {
+                        success: 1,
+                        file: {
+                            url: await saveToStorage(`${makeId(9)}.${file.type.split("/")[1]}`, "videos", file),
+                            width: "400px",
+                            height: "fit-content"
+                            // any other image data you want to store, such as width, height, color, extension, etc
+                        }
+                    }
+                },
+                async uploadByUrl(url: string) {
+                    console.log("uploading...", url)
+                    return {
+                        success: 1,
+                        file: {
+                            url: url,
+                            // any other image data you want to store, such as width, height, color, extension, etc
+                        }
+                    }
+                },
+            }
+        }
+    },
+    image: {
+        class: ImageTool,
+        inlineToolbar: true,
+        config: {
+            endpoints: {
+                byFile: '', // Your backend file uploader endpoint
+                byUrl: '', // Your endpoint that provides uploading by Url
+            },
+            uploader: {
+                async uploadByFile(file: any) {
+                    console.log("uploading...", file.type)
+
+                    return {
+                        success: 1,
+                        file: {
+                            url: await saveToStorage(`${makeId(9)}.${file.type.split("/")[1]}`, "images", file),
+                            // any other image data you want to store, such as width, height, color, extension, etc
+                        }
+                    }
+                },
+                async uploadByUrl(url: string) {
+                    console.log("uploading...", url)
+                    return {
+                        success: 1,
+                        file: {
+                            url: url,
+                            // any other image data you want to store, such as width, height, color, extension, etc
+                        }
+                    }
+                },
+            }
+        }
+    }
 };
+
+export const EMAIL = {
+    TEMPLATES: {
+        NUDGE: (student: string, coach: string) => `Hey ${student},\nThis is a nudge message\n\n-\n\t${coach}`
+    }
+}
+
+export const DEFAULT_CONTENT_DATA = (type: contentTypes) => {
+    switch (type) {
+        case "text": return {}
+        case "rate": return {header: ""}
+        case "email": return {subject: "", html: "", sendOnComplete: true, sendToParent: false}
+        case "rank": return {items: Array(5).fill(0).map((_, i) => ({id: `${i}`, text: `Statement ${i}`}))}
+        case "select":
+        case "multiSelect":
+        default: return
+    }
+}
+export const NEW_CONTENT = (type: contentTypes) => ({data: DEFAULT_CONTENT_DATA(type), type: type, responses: []})

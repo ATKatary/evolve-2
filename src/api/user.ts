@@ -54,6 +54,24 @@ export async function login(auth: AuthContextType, loginInfo: loginInfoType, set
     }
 }
 
+export async function signup(auth: AuthContextType, loginInfo: loginInfoType, setLoginInfo: CallableFunction) {
+    try {
+        let error: any = await auth?.signup(loginInfo.email, loginInfo.password, loginInfo.name);
+
+        switch (error?.code || "") {
+            case "auth/email-already-in-use": 
+                setLoginInfo({status: 403, message: "Email already in use", error: true});
+                break;
+            case "": 
+                setLoginInfo({status: null, message: "Signed up!", success: true});
+                break;
+            default:
+                console.error(error)
+                return
+        }
+    } catch (error: any) {console.error(error.message)}
+}
+
 export async function checkPassword(auth: AuthContextType, setLoginInfo: CallableFunction) {
     if (auth?.isAuthenticated) {
         setLoginInfo({resetPass: await auth.needsPasswordChange(), loggedIn: true});

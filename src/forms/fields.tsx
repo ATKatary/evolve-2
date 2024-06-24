@@ -52,7 +52,7 @@ export function FormField({...props}) {
             helperText={helperText}
             color={color || "primary"}
             InputProps={{
-                style: {
+                sx: {
                     padding: 0,
                     borderRadius: 0,
                     color: THEME.TEXT,

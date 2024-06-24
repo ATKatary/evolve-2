@@ -47,22 +47,20 @@ const Android12Switch = styled(Switch)(({...props}) => {
 });
 
 export function AndroidSwitch({...props}) {
-    const {onText, offText, onChange, style, className, defaultChecked, ...rest} = props;
+    const {onText, offText, onChange, style, className, checked, containerClassName, containerStyle, ...rest} = props;
 
-    const [text, setText] = React.useState<string>(defaultChecked? onText : offText);
     return (
-        <div className="flex align-center column">
+        <div className={`flex align-center column ${containerClassName || ""}`} style={{...containerStyle}}>
             <Android12Switch 
                 {...rest} 
                 sx={{...style}}
-                defaultChecked={defaultChecked}      
+                checked={checked}      
                 className={`${className || ""}`}
                 onChange={(event, checked) => {
-                    setText(checked? onText : offText);
                     if (onChange) onChange(checked);
                 }}
             /> 
-            <Typography fontSize={THEME.FONT.PARAGRAPH}>{text}</Typography>
+            <Typography fontSize={THEME.FONT.PARAGRAPH} style={{width: "max-content"}}>{checked? onText : offText}</Typography>
         </div>
     )
 }

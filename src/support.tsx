@@ -2,7 +2,7 @@ import * as React from "react";
 
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import PauseCircleIcon from '@mui/icons-material/PauseCircle';
-import { Backdrop, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, LinearProgress, Slider, Snackbar, Typography } from '@mui/material';
+import { Backdrop, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, LinearProgress, Slider, Snackbar, Tooltip, Typography } from '@mui/material';
 
 import { COLORS, THEME } from "./constants";
 import { styles } from "./styles";
@@ -144,18 +144,20 @@ export function Confirm({...props}) {
 }
 
 export function StyledInput({...props}) {
-    const {style, className, onChange, ...rest} = props;
+    const {style, className, onChange, value, disableTooltip, ...rest} = props;
 
     return (
-        <input 
-            {...rest}
-            style={{...style}}
-            className={`${className || ""}`}
-            onChange={(event) => {
-                console.log(event.target.parentElement)
-                if (onChange) onChange(event.target.value)
-            }}
-            onClick={(event) => event.currentTarget.parentElement?.click()}
-        />
+        <Tooltip title={value} disableHoverListener={disableTooltip} disableFocusListener={disableTooltip}>
+            <input 
+                {...rest}
+                value={value}
+                className={`${className || ""}`}
+                style={{textAlign: "center", ...style}}
+                onChange={(event) => {
+                    if (onChange) onChange(event.target.value)
+                }}
+                onClick={(event) => event.currentTarget.parentElement?.click()}
+            />
+        </Tooltip>
     )
 }

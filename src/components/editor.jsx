@@ -1,9 +1,9 @@
 import * as React from "react";
 import EditorJS from "@editorjs/editorjs";
-import { EDITOR_JS_TOOLS } from "../constants";
+import { EDITOR_JS_TOOLS, THEME } from "../constants";
 
 const Editor = ({...props}) => {
-    const {data, onChange, editorBlock, edit, content} = props;
+    const {style, data, onChange, editorBlock, edit, content} = props;
 
     const ref = React.useRef();
     const [localData, setLocalData] = React.useState();
@@ -12,7 +12,7 @@ const Editor = ({...props}) => {
     React.useEffect(() => {
         //Initialize editorjs if we don't have a reference
         if (ref.current?.destroy) {
-            console.log(`[Editor] >> destroying editor ${editorBlock}`)
+            // console.log(`[Editor] >> destroying editor ${editorBlock}`)
             ref.current.destroy();
         }
         const editor = new EditorJS({
@@ -20,6 +20,7 @@ const Editor = ({...props}) => {
 
             data: data,
             readOnly: !edit,
+            autofocus: true,
             tools: EDITOR_JS_TOOLS,
             async onChange(api, event) {
                 if (!this.readOnly) {
@@ -31,14 +32,14 @@ const Editor = ({...props}) => {
             },
         });
 
-        editor.isReady.then(() => console.log(console.log(`[Editor] >> created editor ${editorBlock}`)))
+        // editor.isReady.then(() => console.log(console.log(`[Editor] >> created editor ${editorBlock}`)))
         ref.current = editor;
         
         
         // Add a return function to handle cleanup
         return () => {
             if (ref.current && ref.current?.destroy) {
-                console.log(`[Editor] >> destroying editor ${editorBlock}`)
+                // console.log(`[Editor] >> destroying editor ${editorBlock}`)
                 ref.current?.destroy();
             }
         };
@@ -47,7 +48,7 @@ const Editor = ({...props}) => {
     React.useEffect(() => {
         if (localData) onChange({...content, data: localData})
     }, [localData])
-    return <div id={editorBlock} />;
+    return <div id={editorBlock} className="width-100" style={{marginTop: edit? 0 : -30, border: edit? `0.5px solid ${THEME.BACKGROUND_ACCENT_2}` : "none", ...style}}/>;
 };
 
 export default React.memo(Editor);

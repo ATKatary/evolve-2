@@ -1,9 +1,10 @@
 import * as React from "react";
 import { useCustomState } from "../utils";
-import { interfaceStateType, objWithId, userType } from "../types";
+import { interfaceStateType, objWithId, studentProgressType, userType } from "../types";
 import { GenericClass } from "./genericClass";
 import { StudentInterface } from "../interfaces";
-import { DocumentReference } from "firebase/firestore";
+import { DocumentReference, doc } from "firebase/firestore";
+import { db, getFromCollection, saveToCollection } from "../api/firebase";
 
 export class Student extends GenericClass<any> implements StudentInterface {
     collectionId = "users"
@@ -13,12 +14,15 @@ export class Student extends GenericClass<any> implements StudentInterface {
 
     setPrograms: (programs: any) => any;
     programs: objWithId<DocumentReference>[] = [];
+
+    setProgress: (programs: any) => any;
+    progress: studentProgressType[] = [];
     
     parentalEmail: string | null = null;
     setParentalEmail: (parentalEmail: any) => any;
 
 
-    constructor(uid: string | null, coach?: objWithId<DocumentReference>, programs?: objWithId<DocumentReference>[], parentalEmail?: string) {
+    constructor(uid: string | null, coach?: objWithId<DocumentReference>, programs?: objWithId<DocumentReference>[], parentalEmail?: string, progress?: studentProgressType[]) {
         super(uid);
         if (coach) this.coach = coach;
         this.setCoach = (newState) => {};
@@ -26,12 +30,26 @@ export class Student extends GenericClass<any> implements StudentInterface {
         if (programs) this.programs = programs;
         this.setPrograms = (newState) => {};
 
+        if (progress) this.progress = progress;
+        this.setProgress = (newState) => {};
+
         if (parentalEmail) this.parentalEmail = parentalEmail;
         this.setParentalEmail = (newState) => {};
     }
 
-    async assign(coachRef: DocumentReference): Promise<boolean> {
-        return await this.save({coach: coachRef})
+    static async assign(id: string, coachId: string): Promise<boolean> {
+        const coach = await getFromCollection(coachId, "users") as any;
+        if (coach) {
+            const coachAssigned = await saveToCollection(id, "users", {coach: [coach.name, doc(db, "users", coachId)]}, {});
+            let studentAssigned = true;
+            if (!coach.students.find((studentRef: DocumentReference) => studentRef.id === id)) {
+                studentAssigned = await saveToCollection(coachId, "users", {students: [...coach.students, doc(db, "users", id)]}, {});
+            }
+
+            return coachAssigned && studentAssigned;
+        }
+
+        return false;
     }
 
     async initialize(id: string | null) {
@@ -61,6 +79,7 @@ export function useStudent(id?: string) {
     [student.state, student.setState] = useCustomState<interfaceStateType>({});
 
     [student.programs, student.setPrograms] = React.useState<objWithId<DocumentReference>[]>([]);
+    [student.progress, student.setProgress] = React.useState<studentProgressType[]>([]);
     [student.coach, student.setCoach] = React.useState<objWithId<DocumentReference> | null>(null);
     [student.parentalEmail, student.setParentalEmail] = React.useState<string | null>(null);
 

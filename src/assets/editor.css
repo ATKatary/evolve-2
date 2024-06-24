@@ -1,20 +1,24 @@
 /***** Always True *****/
 @media only screen {
     .codex-editor {
-        width: 60%;
+        width: 100%;
         height: auto;
         font-size: 12px;
         overflow: scroll;
-        min-height: 250px;
+        /* min-height: 250px; */
         max-width: 1058px;
         padding: 20px 30px;
-        background: #f9f9f9;
-        margin: 10px 0 10px 0;
+        /* background: #f9f9f9; */
+        /* margin: 10px 0 10px 0; */
         scrollbar-width: none;
         font-family: 'Helios Extended';
-        max-height: calc(100vh - 376px);
-        width: calc(0.8*(100vw - 225px) - 60px);
+        /* max-height: calc(100vh - 376px); */
+        /* width: calc(0.8*(100vw - 225px) - 60px); */
         
+    }
+
+    .ce-block:first-of-type {
+        /* display: none; */
     }
 
     #editorjs-container {
@@ -26,8 +30,9 @@
     }
     
     .ce-toolbar__content, .ce-block__content {
-        max-width: unset;
-        width: 92% !important;
+        /* max-width: unset;
+        width: 92% !important; */
+        margin: 0 30px;
     }
     
     .editorjs-codeFlask_Wrapper .editorjs-codeFlask_LangDisplay {
@@ -66,6 +71,59 @@
         margin-bottom: 5px;
         resize: both;
         overflow: auto;
+    }
+
+    .image-tool__image-picture {
+        width: 300px;
+    }
+
+    .image-tool__image {
+        display: flex;
+        /* justify-content: center; */
+    }
+
+    .ce-toolbox, .ce-settings {
+        position: relative 
+    }
+
+    .video-tool__video {
+        border: none !important;
+        background-color: transparent !important
+    }
+
+    .video-tool__video > div {
+        width: 400px !important;
+        height: fit-content !important
+    }
+    
+    .ce-toolbar__actions--opened {
+        margin-right: -30px;
+    }
+
+    .cdx-search-field {
+        display: none;
+    }
+
+    .ce-popover-item__title {
+        display: none;
+    }
+
+    .ce-popover-item__icon {
+        margin: 0
+    }
+    
+    .ce-popover__items {
+        display: flex;
+    }
+
+    .ce-popover {
+        top: -10px;
+        left: 5px;
+       --width: fit-content;
+    }
+
+    .ce-inline-toolbar__dropdown, .ce-conversion-toolbar, .ce-conversion-toolbar__label {
+        display: none;
     }
 }
 

@@ -1,7 +1,8 @@
 import { COLORS, THEME } from "./constants";
+import { stylesType } from "./types";
 
-export const styles: any = {
-    button: {
+export const styles: stylesType = {
+    button: (diabled?: false) => ({
         width: 275,
         height: 40,
         borderRadius: "5px",
@@ -12,20 +13,20 @@ export const styles: any = {
         fontSize: THEME.FONT.SUB_HEADING,
         backgroundColor: THEME.BUTTON_ACCENT,
         '&:hover': {
-            backgroundColor: THEME.ACTIVE_ACCENT,
+            backgroundColor: diabled? "" : THEME.ACTIVE_ACCENT,
         },
         '&:active': {
-            backgroundColor: THEME.ACTIVE_ACCENT,
+            backgroundColor: diabled? "" : THEME.ACTIVE_ACCENT,
         },
-    },
+    }),
 
-    testimonialImage: {
+    testimonialImage: () => ({
         maxWidth: "98%", 
         height: 350, 
         border: `1px solid ${THEME.ACTIVE_ACCENT}`
-    },
+    }),
 
-    formField: {
+    formField: () => ({
         width: 275,
         margin: 7.5,
         borderRadius: "5px",
@@ -33,26 +34,26 @@ export const styles: any = {
         '&:active': {
             border: `1px solid ${COLORS.WHITE}`
         }
-    },
+    }),
 
     /*** Custom Table ***/
-    customTableCell: {
+    customTableCell: () => ({
         padding: 0,
         border: "none"
-    },
+    }),
 
     /*** Admin Panel ***/
-    adminPanel: {
+    adminPanel: () => ({
         // height: "calc(100% - 110px)"
-    },
+    }),
     
-    adminHeaderStyle: {
+    adminHeaderStyle: () => ({
         height: 50, 
         marginBottom: 10,
         borderRadius: "5px",
         width: "calc(80% - 2px)",
         border: `1px solid ${COLORS.LIGHT_GRAY}`, 
-    },
+    }),
 
     adminTable: (width?: number, orientation?: string) => ({
         marginTop: 0,
@@ -61,12 +62,12 @@ export const styles: any = {
         maxHeight: "calc(100vh - 250px)"
     }),
 
-    adminSelect: {
+    adminSelect: () => ({
         width: 100,
         height: 40,
         borderRadius: "5px",
         fontSize: THEME.FONT.PARAGRAPH,
-    },
+    }),
 
     adminHeaderButton: (active?: boolean) => ({
         width: 200,
@@ -135,22 +136,22 @@ export const styles: any = {
     }),
 
     entryDivider: (show?: boolean) => ({
-        width: "100%",
+        width: "calc(100% - 150px)",
         opacity: show? 1 : 0,
         "&:hover": {
             opacity: 1
         }
     }),
 
-    entryButton: {
+    entryButton: () => ({
         margin: "0 5px 0 5px",
         textTransform: "none",
         color: THEME.DOMINANT,
         fontSize: THEME.FONT.PARAGRAPH,
-    },
+    }),
 
-    tabs: {
-    },
+    tabs: () => ({
+    }),
 
     tabDeleteButton: (active?: boolean) => ({
         width: 75,
@@ -159,13 +160,13 @@ export const styles: any = {
         "&:hover": {opacity: active? 1 : 0}
     }),
 
-    saveContentButton: {
+    saveContentButton: () => ({
         color: THEME.BUTTON_ACCENT,
         opacity: 0.5,
         "&:hover": {
             opacity: 1
         }
-    },
+    }),
 
     deleteContentButton: (show?: boolean) => ({
         display: show? "" : "none",
@@ -176,19 +177,47 @@ export const styles: any = {
         }
     }),
 
-    programHeaderButton: {
+    programHeaderButton: () => ({
         margin: "5px 10px 5px 10px",
         color: THEME.DOMINANT,
         opacity: .5,
         "&:hover": {
             opacity: 1,
         }
-    },
+    }),
 
     title: (edit?: boolean) => ({
         width: "min-content",
         opacity: edit? 1 : 0.5,
         fontSize: THEME.FONT.HEADING, 
         // borderBottom: edit? `1px solid ${THEME.DOMINANT}` : "none",
-    })
+    }),
+
+    entryHeader: (edit?: boolean) => ({
+        width: "100%",
+        borderBottom: "none", 
+        opacity: edit? 1 : 0.5,
+        fontSize: THEME.FONT.PARAGRAPH, 
+    }),
+
+    promptEntry: (edit?: boolean) => ({
+        padding: 10,
+        minHeight: 150,
+        maxHeight: 300,
+        outline: "none",
+        resize: "vertical",
+        opacity: edit? 1 : 0.5,
+        width: "calc(100% - 20px)",
+        fontSize: THEME.FONT.PARAGRAPH, 
+        border: `1px solid ${THEME.DOMINANT}`, 
+    }),
+
+    moveContentButton: (show?: boolean) => ({
+        display: show? "" : "none",
+        opacity: 0.5,
+        color: THEME.DOMINANT,
+        "&:hover": {
+            opacity: 1
+        }
+    }),
 }

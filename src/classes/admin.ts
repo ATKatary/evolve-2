@@ -1,16 +1,21 @@
 import * as React from "react";
-import { objWithId } from "../types";
+import { objWithId, programType } from "../types";
 import { getCollection } from "../api/firebase";
 
 export class Admin {
-    static async getAll(): Promise<objWithId<any>> {
+    static async getAll(): Promise<objWithId<any>[]> {
         return await getCollection<any>("users");
+    }
+
+    static async getPrograms(): Promise<objWithId<programType>[]> {
+        return await getCollection<programType>("programs")
     }
 }
 
 export function useAdmin() {
     const [coaches, setCoaches] = React.useState<objWithId<any>[]>([]);
     const [students, setStudents] = React.useState<objWithId<any>[]>([]);
+    const [programs, setPrograms] = React.useState<objWithId<programType>[]>([]);
 
     const [initialized, setInitialized] = React.useState<boolean>(false);
     
@@ -20,14 +25,17 @@ export function useAdmin() {
 
             const getAllWrapper = async () => {
                 const users = await Admin.getAll();
+                const programs = await Admin.getPrograms();
+
+                setPrograms(programs)
                 setCoaches(users.filter(([_, user]) => user.role === "coach") as objWithId<any>)
 
                 let loadedStudents = users.filter(([_, user]) => user.role === "student") as objWithId<any>;
-                setStudents(loadedStudents.map(([id, user]) => [id, {...user, coach: user.coach? user.coach[1].id : undefined}]))
+                setStudents(loadedStudents.map(([id, user]) => [id, {...user, coach: user.coach? user.coach[1]?.id : undefined}]))
             }
             getAllWrapper();
         }
     }, [initialized])
-    
-    return {students, coaches}
+
+    return {students, coaches, setStudents, setCoaches, programs}
 }
