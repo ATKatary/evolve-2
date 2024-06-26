@@ -122,10 +122,3 @@ export async function getCollection<T>(id: string): Promise<objWithId<T>[]> {
 
     return (await getDocs(query(collectionRef, limit(500)))).docs.map((snapshot) => [snapshot.id, snapshot.data() as T]);
 }
-
-export async function sendEmail(email: emailType): Promise<boolean> {
-    const collectionRef = collection(db, "mail");
-    console.log(email)
-    const emailDoc = await addDoc(collectionRef, email)
-    return emailDoc.id? true : false;
-}

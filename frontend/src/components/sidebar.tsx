@@ -9,12 +9,12 @@ import NotificationsActiveRoundedIcon from '@mui/icons-material/NotificationsAct
 import "../assets/utils.css";
 import { styles } from "../styles";
 import { EMAIL, THEME } from "../constants";
-import { objWithId, sidebarSectionType } from "../types";
-import { Button, IconButton, Tooltip, Typography } from "@mui/material";
-import { SelectField } from "../forms/fields";
 import { getDevOrDepUrl } from "../utils";
-import { sendEmail } from "../api/firebase";
+import { sendEmail } from "../api/evolve";
+import { SelectField } from "../forms/fields";
+import { objWithId, sidebarSectionType } from "../types";
 import { LoadingContext, NotificationContext } from "..";
+import { Button, IconButton, Tooltip, Typography } from "@mui/material";
 
 
 function Sidebar({...props}) {

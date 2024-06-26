@@ -20,12 +20,13 @@ import { COLORS, FIELDS, THEME } from "../constants";
 import { db, getFromCollection, saveToCollection } from "../api/firebase";
 import { LoadingContext, NotificationContext } from "..";
 import { Breadcrumbs, Button, IconButton, Link, Tooltip, Typography } from "@mui/material";
-import { entryType, moduleType, objWithId, programType, selectMenuOptionType, stateType, stepType, studentProgressType } from "../types";
+import { emailType, entryType, moduleType, objWithId, programType, selectMenuOptionType, stateType, stepType, studentProgressType } from "../types";
 import { Loading, Notification, useScreenOrientation, useViewport } from "../support";
 import { ProgressField, SelectField } from "../forms/fields";
 import { camelize, computeProgramProgressScore, getDevOrDepUrl, makeId, nullify } from "../utils";
 import { DocumentReference, deleteDoc, doc } from "firebase/firestore";
 import { useAuth } from "../context/auth";
+import { sendEmail } from "../api/evolve";
 
 
 function CoachPage({...props}) {
