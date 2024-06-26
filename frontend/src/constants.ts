@@ -6,7 +6,7 @@ import Paragraph from "@editorjs/paragraph";
 import VideoTool from "@weekwood/editorjs-video";
 
 
-import { contentTypes, fieldType, selectMenuOptionType } from "./types"
+import { contentTypes, fieldType, objWithId, selectMenuOptionType } from "./types"
 import { Student } from "./classes/student";
 import { Coach } from "./classes/coach";
 import { db, getFromCollection, saveToStorage } from "./api/firebase";
@@ -53,9 +53,12 @@ export const FIELDS = {
         {name: "Email", type: "text", editable: false, style: {width: 150}} as fieldType,
     ],
 
-    STUDENTS: (coaches?: selectMenuOptionType[], programs?: selectMenuOptionType[]) => [
+    STUDENTS_ADMIN: (coaches?: selectMenuOptionType[]) => [
         {name: "ParentalEmail", type: "text", editable: true, style: {width: 150}} as fieldType,
         {name: "Coach", type: "select", editable: true, options: coaches, style: {width: 150}} as fieldType,
+    ],
+
+    STUDENTS_COACH: (programs?: selectMenuOptionType[]) => [
         {name: "Programs", type: "multiSelect", editable: true, options: programs, style: {width: 150}} as fieldType,
     ],
 

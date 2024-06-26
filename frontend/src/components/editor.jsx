@@ -20,7 +20,7 @@ const Editor = ({...props}) => {
 
             data: data,
             readOnly: !edit,
-            autofocus: true,
+            autofocus: edit,
             tools: EDITOR_JS_TOOLS,
             async onChange(api, event) {
                 if (!this.readOnly) {

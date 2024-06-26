@@ -44,6 +44,8 @@ export type loginInfoType = {
 };
 
 /*** Utility ***/
+export type itemType = {id: string, text: string}
+
 export type emailMessageType = {
     subject: string
     html: string 
@@ -73,7 +75,7 @@ export type fieldType = {
     editable?: boolean 
     onChange?: CallableFunction
     style?: React.CSSProperties
-    type: "text" | "select" | "multiSelect" | "checkbox" | "total" 
+    type: "text" | "select" | "multiSelect" | "checkbox" | "total"  | "progress"
     
     options: selectMenuOptionType[]
 }

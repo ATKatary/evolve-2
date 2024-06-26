@@ -15,7 +15,7 @@ import { Rank } from "./rank";
 import { styles } from "../styles";
 import { THEME } from "../constants";
 import { StyledInput } from "../support";
-import { contentType, entryType, responseType } from "../types";
+import { contentType, entryType, itemType, responseType } from "../types";
 import { arrayMoveImmutable } from "array-move";
 import { AndroidSwitch } from "./androidSwitch";
 
@@ -217,13 +217,23 @@ function RankContent({...props}) {
         })
     }
 
+    const [items, setItems] = React.useState<itemType[]>([]);
+
+    React.useEffect(() => {
+        if (studentId && response?.response) {
+            setItems(response.response)
+        } else {
+            setItems(content.data.items)
+        }
+    }, [studentId])
+
     return (
         <div className={`width-100 flex column align-center justify-center ${className || ""}`} style={{...style}}>
             <StyledInput 
                 disableTooltip
                 disabled={!edit} 
                 value={content?.data?.header || ""}
-                style={{...styles.entryHeader(edit), width: "calc(100% - 120px)"}} 
+                style={{...styles.entryHeader(edit, studentId && !isCoach? 1 : undefined), width: "calc(100% - 120px)"}} 
                 className={`${edit? "pointer" : ""}`}
                 placeholder={`Rank the following in order of importance.`}
                 onChange={(value: string) => onChange({...content, data: {...content.data, header: value}})}
@@ -231,7 +241,10 @@ function RankContent({...props}) {
             <div className="flex align-center" style={{width: "calc(100% - 75px)"}}>
                 <Rank 
                     edit={edit}
-                    data={!isCoach && studentId && response? response : content.data.items}
+                    items={items}
+                    isCoach={isCoach}
+                    setItems={setItems}
+                    studentId={studentId}
                     onInputChange={isCoach && !studentId? (items: any) => onChange({...content, data: {...content.data, items: items}}) : undefined}
                     onRankChange={studentId && !isCoach? onStudentRankChange : (items: any) => onChange({...content, data: {...content.data, items: items}})}
                 />
@@ -264,12 +277,12 @@ function EmailContent({...props}) {
                     placeholder={`Subject`}
                     value={content?.data?.subject || ""}
                     className={`${edit? "pointer" : ""}`}
-                    style={{...styles.entryHeader(edit), textAlign: "start"}} 
+                    style={{...styles.entryHeader(edit, studentId && !isCoach? 1 : undefined), textAlign: "start"}} 
                     onChange={(value: string) => onChange({...content, data: {...content.data, subject: value}})}
                 />
                 <AndroidSwitch 
-                    offText="Send on Complete" 
-                    onText="Send on Complete"  
+                    offText="Send on complete" 
+                    onText="Send on complete"  
                     containerClassName="row-reverse"
                     checked={content?.data?.sendOnComplete} 
                     onChange={(on: boolean) => onChange({...content, data: {...content.data, sendOnComplete: on}})}
@@ -321,14 +334,14 @@ function PromptEntry({...props}) {
                 placeholder={`What are you life goals?`}
                 value={content?.data?.header || ""}
                 className={`${edit? "pointer" : ""}`}
-                style={{...styles.entryHeader(edit), width: "calc(100% - 120px)"}} 
+                style={{...styles.entryHeader(edit, studentId && !isCoach? 1 : undefined), width: "calc(100% - 120px)"}} 
                 onChange={(value: string) => onChange({...content, data: {...content.data, header: value}})}
             />
             <textarea 
                 value={response?.response || ""}
                 disabled={!studentId || isCoach} 
                 placeholder="Enter response here..." 
-                style={{...styles.promptEntry(edit) as React.CSSProperties, width: "calc(100% - 130px)"}} 
+                style={{...styles.promptEntry(edit,  studentId && !isCoach? 1 : undefined) as React.CSSProperties, width: "calc(100% - 130px)"}} 
                 onChange = {studentId && !isCoach? (event: any) => onStudentTextChange(event?.target.value) : () => {}}
             >
             </textarea>
@@ -360,7 +373,7 @@ function RateContent({...props}) {
                 placeholder={`How happy are you?`}
                 value={content?.data?.header || ""}
                 className={`${edit? "pointer" : ""}`}
-                style={{...styles.entryHeader(edit)}} 
+                style={{...styles.entryHeader(edit, studentId && !isCoach? 1 : undefined)}} 
                 onChange={(value: string) => onChange({...content, data: {...content.data, header: value}})}
             />
             <Rate 

@@ -29,7 +29,7 @@
         padding: 0 !important;
     }
     
-    .ce-toolbar__content, .ce-block__content {
+    .ce-toolbar__content {
         /* max-width: unset;
         width: 92% !important; */
         margin: 0 30px;

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { objWithId, programType } from "../types";
 import { getCollection } from "../api/firebase";
+import { DocumentReference } from "firebase/firestore";
 
 export class Admin {
     static async getAll(): Promise<objWithId<any>[]> {
@@ -31,7 +32,7 @@ export function useAdmin() {
                 setCoaches(users.filter(([_, user]) => user.role === "coach") as objWithId<any>)
 
                 let loadedStudents = users.filter(([_, user]) => user.role === "student") as objWithId<any>;
-                setStudents(loadedStudents.map(([id, user]) => [id, {...user, coach: user.coach? user.coach[1]?.id : undefined}]))
+                setStudents(loadedStudents.map(([id, user]) => [id, {...user, programs: user.programs?.map((program: DocumentReference) => program.id), coach: user.coach? user.coach[1]?.id : undefined}]))
             }
             getAllWrapper();
         }

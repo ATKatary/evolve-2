@@ -13,7 +13,7 @@ import { fieldType, selectMenuOptionType } from "../types";
 import { COLORS, THEME } from "../constants";
 import CustomTable from "../components/table";
 import { camelize, nullify, useCustomState } from "../utils";
-import { CheckBoxField, FormField, SelectField } from "../forms/fields";
+import { CheckBoxField, FormField, ProgressField, SelectField } from "../forms/fields";
 
 
 function AdminPanel<T>({...props}) {
@@ -32,12 +32,12 @@ function AdminPanel<T>({...props}) {
                 style={{...styles.adminHeaderStyle() as React.CSSProperties}}
             >
                 <IconButton style={{height: 40, width: 40}} onClick={() => setAddRow(true)}>
-                    <AddIcon sx={{color: COLORS.LIGHT_GRAY}}/>
+                    {createRow? <AddIcon sx={{color: COLORS.LIGHT_GRAY}}/> : <></>}
                 </IconButton>
                 {fields?.map((field: fieldType, i: number) => 
                     <Typography style={{...field.style, fontSize: THEME.FONT.PARAGRAPH}} className="text-center" key={`field-header-${i}`}>{field.type === "total"? "No. " : ""}{field.name}</Typography>
                 )}
-                <Typography fontSize={12} style={{width: 90}} className="text-center">Actions</Typography>
+                {saveRow? <Typography fontSize={12} style={{width: 90}} className="text-center">Actions</Typography> : <></>}
 
             </div>
             {rows? 
@@ -56,17 +56,19 @@ function AdminPanel<T>({...props}) {
                 : <></>}
                 <CustomTable 
                     rows={rows || []}
-                    cells={([id, row]: [string, T], i: number) => 
-                        <AdminPanelRow 
-                            i={i}
-                            id={id}
-                            key={id}
-                            data={row}
-                            fields={fields}
-                            deleteRow={deleteRow}
-                            saveRow={(data: T) => saveRow? saveRow(id, data) : null}
-                        />
-                    }
+                    cells={([id, row]: [string, T], i: number) => { 
+                        return (
+                            <AdminPanelRow 
+                                i={i}
+                                id={id}
+                                key={id}
+                                data={row}
+                                fields={fields}
+                                deleteRow={deleteRow}
+                                saveRow={saveRow? (data: T) => saveRow(id, data) : null}
+                            />
+                        )
+                    }}
                     backgroundColor={THEME.BACKGROUND_ACCENT}
                     style={{...styles.adminTable()}}                
                 />
@@ -114,20 +116,23 @@ function AdminPanelRow<T>({...props}) {
                     value: row? row[camelize(field.name)] : undefined,
                 })
             })}
-            <div>
-                {editAll || edit?
-                    <IconButton style={{height: 40, width: 40}} onClick={() => {setEdit(false); saveRow(row)}}>
-                        <SaveIcon sx={{color: COLORS.LIGHT_GRAY}}/>
+            {saveRow?
+                <div>
+                    {editAll || edit?
+                        <IconButton style={{height: 40, width: 40}} onClick={() => {setEdit(false); saveRow(row)}}>
+                            <SaveIcon sx={{color: COLORS.LIGHT_GRAY}}/>
+                        </IconButton>
+                        :
+                        <IconButton style={{height: 40, width: 40}} onClick={() => {setEdit(true)}}>
+                            <EditIcon sx={{color: COLORS.LIGHT_GRAY}}/>
+                        </IconButton>
+                    }
+                    <IconButton style={{height: 40, width: 40, marginLeft: 10}} onClick={() => {setEdit(false); deleteRow(id)}}>
+                        <DeleteIcon sx={{color: THEME.ERROR}}/>
                     </IconButton>
-                    :
-                    <IconButton style={{height: 40, width: 40}} onClick={() => {setEdit(true)}}>
-                        <EditIcon sx={{color: COLORS.LIGHT_GRAY}}/>
-                    </IconButton>
-                }
-                <IconButton style={{height: 40, width: 40, marginLeft: 10}} onClick={() => {setEdit(false); deleteRow(id)}}>
-                    <DeleteIcon sx={{color: THEME.ERROR}}/>
-                </IconButton>
-            </div>
+                </div> 
+                : <></>
+            }
         </div>
     )
 }
@@ -144,11 +149,11 @@ function getField(field: fieldType, {...props}) {
                     value={value}
                     variant="outlined" 
                     placeholder={field.name}
-                    className={`${className || ""}`}
                     style={{...styles.formField(), ...fieldStyle}}
                     onChange={async (event: any) => setRow(event.target.value)}
                     disabled={editAll? false : (field.editable? disabled : true)}
                     inputStyle={{fontSize: THEME.FONT.PARAGRAPH, borderRadius: "5px"}}
+                    className={`${className || ""}`}
                 />
             )
         case "multiSelect":
@@ -181,6 +186,16 @@ function getField(field: fieldType, {...props}) {
                     onChange={async (event: any) => setRow(event.target.checked)}
                     disabled={editAll? false : (field.editable? disabled : true)}
                     style={{...styles.formField(), ...styles.adminSelect(), ...fieldStyle, border: "none"}}
+                />
+            )
+        case "progress":
+            return (
+                <ProgressField 
+                    key={key}
+                    value={value} 
+                    onChange={async (event: any) => setRow(event.target.checked)}
+                    disabled={editAll? false : (field.editable? disabled : true)}
+                    style={{...styles.formField(), ...fieldStyle, border: "none"}}
                 />
             )
         default: return <></>

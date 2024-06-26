@@ -92,7 +92,6 @@ function Program({...props}) {
                         <DeleteIcon style={{width: 25, height: 25}}/>
                     </IconButton>
                 </div>
-                {/* <Typography style={{fontSize: THEME.FONT.HEADING, color: THEME.DOMINANT, marginBottom: 10}}>{program?.name || "Unnamed Program"}</Typography> */}
                 <AndroidSwitch 
                     defaultChecked
                     onText="Program only"   

@@ -28,7 +28,7 @@ function CheckInStep({...props}) {
     }
 
     const addEntryContent = (type: contentTypes) => {
-        const newSelectedContent = step?.entries[selectedEntry]?.displayMode === "slides"? selectedContent + 1 : step?.entries[selectedEntry].contents?.length
+        const newSelectedContent = step?.entries[selectedEntry]?.displayMode === "slides"? selectedContent + 1 : step?.entries[selectedEntry]?.contents?.length
         updateStep({
             ...step, 
             entries: step?.entries?.map((stepEntry: entryType, i: number) => {
@@ -48,20 +48,17 @@ function CheckInStep({...props}) {
 
     return (
         <div style={{...style, marginTop: 30, width: "80%"}} className={`column flex align-center justify-center ${className || ""}`}>
-            {student && (checkInCode !== 404)?
+            {student?
                 <div className="flex align-center width-100">
                     <Typography fontSize={THEME.FONT.PARAGRAPH} color={THEME.DOMINANT}>
                         {student.name} 
                         {checkInCode === 201? 
-                            "is checked off"
-                                    : 
-                                    checkInCode === 200? 
-                                    "is waiting to be checked off"
-                                :
-                                checkInCode === 400? 
-                                "is not ready to be checked off"
+                            " is checked off"
+                                : 
+                                checkInCode === 200? 
+                                " is waiting to be checked off"
                             :
-                            "there is something very wrong"
+                            " is not ready to be checked off"
                         }
                     </Typography>
                     <CheckBoxField 

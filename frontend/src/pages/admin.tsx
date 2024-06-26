@@ -13,7 +13,7 @@ import { LoadingContext, NotificationContext } from "..";
 import { Loading, Notification, useScreenOrientation, useViewport } from "../support";
 import { auth, db, getFromCollection, saveToCollection } from "../api/firebase";
 import { DocumentReference, doc } from "firebase/firestore";
-import { objWithId } from "../types";
+import { entryType, moduleType, objWithId, programType, stepType, studentProgressType } from "../types";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 
 function AdminPage({...props}) {
@@ -42,6 +42,7 @@ function AdminPage({...props}) {
     }
 
     const updateStudent = async (id: string, data: any) => {
+        console.log("[Admin][updateStudent] (data) >>", data)
         loading?.setLoading({message: "Updating students....", load: true})
         const updated = await updateStudentDoc(id, data);
         loading?.setLoading({message: null, load: false})
@@ -50,7 +51,7 @@ function AdminPage({...props}) {
         if (students.find(([studentId, _]) => studentId === id)) {
             for (const [studentId, student] of students) {
                 if (studentId === id && updated) {
-                    let updatedStudent = {...student, data}
+                    let updatedStudent = {...student, ...data}
                     updatedStudents.push([studentId, updatedStudent])
                 } else {
                     updatedStudents.push([studentId, student])
@@ -64,10 +65,17 @@ function AdminPage({...props}) {
 
     const updateStudentDoc = async (id: string, data: any): Promise<boolean> => {
         const coachId = data.coach;
+        const updatedData = {...data}
+        
         const coach = await updateStudentCoach(id, coachId);
+        
         if (coach) {
-            return await saveToCollection(id, "users", {...data, coach: [coach.name, doc(db, "users", coachId)]}, {})
-        } return await saveToCollection(id, "users", {...data, coach: []}, {})
+            updatedData["coach"] = [coach.name, doc(db, "users", coachId)]
+        } else {
+            updatedData["coach"] = []
+        }
+
+        return await saveToCollection(id, "users", updatedData, {})
     }
 
     const updateStudentCoach = async (id: string, coachId?: string) => {
@@ -131,9 +139,8 @@ function AdminPage({...props}) {
                         createRow={(data: any) => createUser(data, updateStudent)}
                         fields={[
                             ...FIELDS.BASE, 
-                            ...FIELDS.STUDENTS(
-                                coaches.map(([id, coach]) => ({name: coach.name, id: id})),
-                                programs.map(([id, program]) => ({name: program.name, id: id}))
+                            ...FIELDS.STUDENTS_ADMIN(
+                                coaches.map(([id, coach]) => ({name: coach.name, id: id}))
                             )
                         ]}
                     /> : <></>

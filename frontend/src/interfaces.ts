@@ -32,7 +32,7 @@ export interface StudentInterface extends GenericClassInterface<userType> {
     parentalEmail: string | null
 
     coach: objWithId<DocumentReference> | null
-    programs: objWithId<DocumentReference>[]
+    programs: DocumentReference[]
     progress: studentProgressType[]
 }   
 

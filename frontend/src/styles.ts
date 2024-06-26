@@ -26,13 +26,13 @@ export const styles: stylesType = {
         border: `1px solid ${THEME.ACTIVE_ACCENT}`
     }),
 
-    formField: () => ({
+    formField: (disable?: boolean) => ({
         width: 275,
         margin: 7.5,
         borderRadius: "5px",
         fontSize: THEME.FONT.PARAGRAPH,
         '&:active': {
-            border: `1px solid ${COLORS.WHITE}`
+            border: disable? "" : `1px solid ${COLORS.WHITE}`
         }
     }),
 
@@ -186,27 +186,27 @@ export const styles: stylesType = {
         }
     }),
 
-    title: (edit?: boolean) => ({
+    title: (edit?: boolean, opacity?: number) => ({
         width: "min-content",
-        opacity: edit? 1 : 0.5,
+        opacity: opacity? opacity : edit? 1 : 0.5,
         fontSize: THEME.FONT.HEADING, 
         // borderBottom: edit? `1px solid ${THEME.DOMINANT}` : "none",
     }),
 
-    entryHeader: (edit?: boolean) => ({
+    entryHeader: (edit?: boolean, opacity?: number) => ({
         width: "100%",
         borderBottom: "none", 
-        opacity: edit? 1 : 0.5,
+        opacity: opacity? opacity : edit? 1 : 0.5,
         fontSize: THEME.FONT.PARAGRAPH, 
     }),
 
-    promptEntry: (edit?: boolean) => ({
+    promptEntry: (edit?: boolean, opacity?: number) => ({
         padding: 10,
         minHeight: 150,
         maxHeight: 300,
         outline: "none",
         resize: "vertical",
-        opacity: edit? 1 : 0.5,
+        opacity: opacity? opacity : edit? 1 : 0.5,
         width: "calc(100% - 20px)",
         fontSize: THEME.FONT.PARAGRAPH, 
         border: `1px solid ${THEME.DOMINANT}`, 

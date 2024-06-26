@@ -40,10 +40,10 @@ export class Coach extends GenericClass<any> implements CoachInterface {
     async initialize(id: string | null) {
         if (this.state.initialized) return;
         this.setState({initialized: true});
-
+        
         console.log(`[Coach][initialize] >> initializing ${id} from ${this.collectionId}...`)
         if (!id) return
-
+        
         const obj = await this.get<any>(id)
         console.log(`[Coach][initialize] (obj) >>`, obj)
         if (obj) {
@@ -77,8 +77,8 @@ export class Coach extends GenericClass<any> implements CoachInterface {
         const students: objWithId<any>[] = [];
 
         for (const student of this.students) {
-            const studentData = (await getDoc(student)).data() as userType
-            students.push([student.id, studentData])
+            const studentData = (await getDoc(student)).data()
+            students.push([student.id, {...studentData}])
         }
         return students;
     }

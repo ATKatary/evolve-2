@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Checkbox, IconButton, InputAdornment, MenuItem, Select, TextField } from '@mui/material';
+import { Checkbox, IconButton, InputAdornment, LinearProgress, MenuItem, Select, TextField, Typography } from '@mui/material';
 
 import { styles } from '../styles';
 import { COLORS, THEME } from '../constants';
@@ -103,5 +103,26 @@ export function CheckBoxField({...props}) {
             style={{...style}}
             className={`${className || ""}`}
         />
+    )
+}
+
+export function ProgressField({...props}) {
+    let {style, value, className, inputStyle, options, ...rest} = props;
+    
+    return (
+        <div className="flex align-center justify-between" style={{width: 50, ...style}}>
+            <LinearProgress 
+                variant="determinate" 
+                value={value*100} 
+                sx={{
+                    width: "calc(100% - 50px)", 
+                    '& .MuiLinearProgress-bar': {
+                        backgroundColor: THEME.DOMINANT
+                    }, 
+                    backgroundColor: THEME.BACKGROUND_ACCENT_2
+                }}
+            />
+            <Typography style={{fontSize: THEME.FONT.PARAGRAPH, color: THEME.DOMINANT}}>{value*100} %</Typography>
+        </div>
     )
 }

@@ -1,5 +1,6 @@
 import * as React from "react";
 import { API, REGEX } from "./constants";
+import { studentProgressType } from "./types";
 
 const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
@@ -182,4 +183,16 @@ export function convertDataToHtml(blocks: any[]) {
         }
     });
     return convertedHtml;
-  }
+}
+
+export function computeProgramProgressScore(moduleIds: string[], progresses: studentProgressType[]) {
+    let score = 0;
+
+    for (const moduleId of moduleIds) {
+        const moduleProgress = progresses?.find(progress => progress.id === moduleId)
+        if (moduleProgress) {
+            score +=  moduleProgress.progress
+        }
+    }
+    return score
+}

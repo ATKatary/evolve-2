@@ -6,19 +6,17 @@ import { List, ListItem, ListItemText, ListItemSecondaryAction, ListItemIcon } f
 import { COLORS, THEME } from "../constants";
 import { styles } from "../styles";
 import { StyledInput } from "../support";
+import { itemType } from "../types";
 
-type itemType = {id: string, text: string}
 export function Rank({...props}) {
-    let {edit, data, onRankChange, onInputChange, ...rest} = props;
+    let {edit, items, setItems, onRankChange, onInputChange, studentId, isCoach, ...rest} = props;
     
-    const [items, setItems] = React.useState<itemType[]>(data);
-
     const onDrop = ({ removedIndex, addedIndex }: {removedIndex: number, addedIndex: number}) => {
-        setItems(items => arrayMoveImmutable(items, removedIndex, addedIndex))
+        setItems((items: itemType[]) => arrayMoveImmutable(items, removedIndex, addedIndex))
     };
 
     React.useEffect(() => {
-        if (!edit) return
+        if ((isCoach && !edit) || (isCoach && studentId)) return
         if (onInputChange) onInputChange(items);
         if (onRankChange) onRankChange(items)
     }, [items])
@@ -33,7 +31,7 @@ export function Rank({...props}) {
                             disabled={!edit} 
                             placeholder={`Statement ${i}`}
                             className={`${edit? "pointer" : ""}`}
-                            style={{...styles.entryHeader(edit), textAlign: "start", width: "calc(100% - 24px)", backgroundColor: COLORS.WHITE}} 
+                            style={{...styles.entryHeader(edit, studentId && !isCoach? 1 : undefined), textAlign: "start", width: "calc(100% - 24px)", backgroundColor: COLORS.WHITE}} 
                             onChange={(value: string) => setItems(items.map((item: itemType) => item.id === id? {...item, text: value} : item))}
                         />
                         <ListItemSecondaryAction>
