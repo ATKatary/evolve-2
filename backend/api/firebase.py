@@ -12,13 +12,14 @@ app = initialize_app(cred)
 
 db = firestore.client()
 
-def send_email(subject: str, html: str, toUids: list[str], ccUids: list[str]) -> bool:
+def send_email(subject: str, html: str, toUids: list[str], ccUids: list[str], to: list[str]) -> bool:
     try:
         db.collection("mail").add({
             "message": {
                 "subject": subject, 
                 "html": html
             }, 
+            "to": to,
             "toUids": toUids,
             "ccUids": ccUids
         })

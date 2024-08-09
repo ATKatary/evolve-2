@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+import os 
 import json
 from pathlib import Path
 
@@ -28,7 +29,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "fabhous.com", "www.fabhous.com", "173.255.198.50"]
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -39,10 +39,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    #installed
+    'ariadne_django',
     'rest_framework',
     'corsheaders',
     'channels',
+
+    #created
     'auto',
+    'user',
+    'program'
 ]
 
 MIDDLEWARE = [
@@ -74,7 +80,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'src.wsgi.application'
+# WSGI_APPLICATION = 'src.wsgi.application'
 ASGI_APPLICATION = 'src.asgi.application'
 
 # Database
@@ -87,6 +93,17 @@ DATABASES = {
     }
 }
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("localhost", 6379)],
+            'symmetric_encryption_keys': [
+                SECRET_KEY,
+            ],
+        },
+    },
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -118,20 +135,10 @@ LOGGING = {
             'class': 'logging.FileHandler',
             'filename': f'{BASE_DIR}/django.log',
         },
-        'daphne_file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': f'{BASE_DIR}/daphne.log',
-        },
     },
     'loggers': {
         'django': {
-            'handlers': ['django_file', 'console'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-        'daphne': {
-            'handlers': ['daphne_file'],
+            'handlers': ['django_file'],
             'level': 'DEBUG',
             'propagate': True,
         },
@@ -153,7 +160,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = 'api/evolve/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -165,7 +173,8 @@ SESSION_COOKIE_SECURE = True
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
-CSRF_TRUSTED_ORIGINS = ['http://localhost:3000', 'https://fabhous.com', 'http://fabhous.com']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000', 'https://fabhous.com', 'https://www.fabhous.com']
 
 CELERY_BROKER_URL = "redis://localhost:6379/0"
 CELERY_RESULT_BACKEND = "redis://localhost:6379/1"
+AUTH_USER_MODEL = "user.CustomUser"

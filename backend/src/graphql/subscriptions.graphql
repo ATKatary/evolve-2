@@ -1,0 +1,7 @@
+type Subscription {
+    watchProgram(id: String): Program!
+    
+    watchModule(id: String): Module!
+
+    watchStep(id: String): Step!
+}

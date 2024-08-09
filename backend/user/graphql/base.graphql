@@ -1,0 +1,22 @@
+scalar DateTime
+scalar Date
+
+type Coach {
+    id: String!
+    name: String!
+    email: String! 
+    calendlyLink: String
+
+    students: [Student]
+    programs: [Program]
+}
+
+type Student {
+    id: String!
+    coach: Coach
+    name: String!
+    email: String! 
+    parentalEmail: String
+
+    programs: [Program]
+}

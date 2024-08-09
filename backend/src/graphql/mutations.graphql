@@ -1,0 +1,23 @@
+type Mutation {
+    assignStudentProgram(id: String!, pids: [String]!, action: String!): Student
+    createCoach(id: String!, first: String!, last: String!, email: String!, password: String!, calendly: String!): Coach 
+    createStudent(id: String!, first: String!, last: String!, email: String!, password: String!, parental: String!): Student 
+
+    createProgram(cid: String!, title: String!): Program!
+    updateProgram(id: String!, title: String): Program
+    deleteProgram(id: String!): Boolean
+
+    createModule(pid: String!, title: String!): Module!
+    updateModule(id: String!, title: String): Module
+    submitModule(id: String!, sid: String!): Submission
+    unsubmitModule(id: String!, sid: String!): Module
+    checkInModule(id: String!, sid: String!, checkedIn: Boolean): Module
+    deleteModule(id: String!): Boolean
+
+    updateStep(id: String!, title: String, displayMode: String): Step
+
+    createEntry(sid: String!, type: String!, data: String): Entry!
+    updateEntry(id: String!, data: String): Entry
+    respondEntry(id: String!, sid: String!, data: String!): Entry
+    deleteEntry(id: String!): Boolean
+}

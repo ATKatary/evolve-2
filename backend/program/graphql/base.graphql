@@ -1,0 +1,50 @@
+type Submission {
+    id: String! 
+    student: Student!
+    checkedIn: Boolean! 
+}
+
+type Response {
+    id: String! 
+    data: String
+    student: Student!
+}
+
+type Entry {
+    id: String! 
+
+    data: String
+    type: String!
+    responses: [Response]!
+}
+
+type Step {
+    id: String! 
+    title: String! 
+
+    displayMode: String! 
+    entries: [Entry]!
+}
+
+type Module {
+    id: String! 
+    title: String! 
+
+    end: Step!
+    start: Step!
+    checkIn: Step!
+    actionPlan: Step!
+    submissions: [Submission]!
+}
+
+type Program {
+    id: String! 
+    title: String! 
+    
+    owner: Coach! 
+    students: [Student]!
+    modules: [Module]!
+
+    progress: Float
+    accessibleModules: [String]
+}

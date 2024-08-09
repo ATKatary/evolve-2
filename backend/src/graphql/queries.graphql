@@ -1,0 +1,12 @@
+type Query {
+    student(id: String!): Student!
+    coach(id: String!): Coach!
+
+    program(id: String!): Program!
+    programProgress(id: String!, sid: String!): Float 
+    
+    module(id: String!): Module!
+    moduleProgress(id: String!, sid: String!): Float
+
+    step(id: String!): Step!
+}
