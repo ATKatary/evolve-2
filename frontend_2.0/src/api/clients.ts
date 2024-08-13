@@ -8,7 +8,7 @@ import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { split, ApolloClient, createHttpLink, InMemoryCache, ApolloLink } from '@apollo/client';
 
 const httpLink = createHttpLink({
-    uri: `https://fabhous.com/api/evolve/gql`
+    uri: `https://evolveacademyinternational.com/api/evolve/gql`
 });
 
 const tokenInfoLink = new ApolloLink((operation, forward) => {
@@ -28,7 +28,7 @@ const authLink = setContext((_, { headers }) => {
 });
 
 export const apolloSocketLink = new GraphQLWsLink(createClient({
-  url: `https://fabhous.com/ws/evolve/gql`,
+  url: `https://evolveacademyinternational.com/ws/evolve/gql`,
   connectionParams: {
     contentType: API.APPLICATION_JSON
   } 

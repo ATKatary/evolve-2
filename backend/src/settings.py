@@ -27,7 +27,7 @@ with open(f"{BASE_DIR.parent}/.creds/django-creds.json", "r") as django_creds:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "fabhous.com", "www.fabhous.com", "173.255.198.50"]
+ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "fabhous.com", "www.fabhous.com", "173.255.198.50", "evolveacademyusa.com", "www.evolveacademyusa.com", "evolveacademyinternational.com", "www.evolveacademyinternational.com", "72.14.177.242"]
 
 # Application definition
 
@@ -161,7 +161,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'api/evolve/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = "/var/www/evolve/static"
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -173,7 +174,7 @@ SESSION_COOKIE_SECURE = True
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
-CSRF_TRUSTED_ORIGINS = ['http://localhost:3000', 'https://fabhous.com', 'https://www.fabhous.com']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000', 'https://fabhous.com', 'https://www.fabhous.com', 'https://evolveacademyusa.com', 'https://www.evolveacademyusa.com', 'https://evolveacademyinternational.com', 'https://www.evolveacademyinternational.com']
 
 CELERY_BROKER_URL = "redis://localhost:6379/0"
 CELERY_RESULT_BACKEND = "redis://localhost:6379/1"

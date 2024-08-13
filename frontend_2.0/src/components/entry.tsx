@@ -68,7 +68,7 @@ function EntryComponent(props: entryComponentPropsType) {
                         '& .MuiLinearProgress-bar': {
                             backgroundColor: THEME.ACTIVE_ACCENT
                         }, 
-                        backgroundColor: THEME.BACKGROUND_ACCENT_2
+                        backgroundColor: THEME.BACKGROUND_ACCENT
                     }}
                 />
                 <IconButton style={{marginLeft: 10, width: 40, height: 40}} onClick={() => setI(Math.min(n - 1, i + 1))}>
