@@ -14,6 +14,7 @@ import { useMutation } from "@apollo/client";
 import { CREATE_COACH, CREATE_STUDENT } from "../mutations";
 import { FormField, PassFormField } from "../forms/fields";
 import { getDevOrDepUrl, useCustomState, validateEmail, validatePassword, validateSignupForm } from "../utils";
+import { sendEmail } from "../api/evolve";
 
 function Signup(props: signupPropsType) {
     const {role, ...domProps} = props;
@@ -55,9 +56,17 @@ function Signup(props: signupPropsType) {
                     password: signupInfo.password,
                     parental: signupInfo.parentalEmail
                 }})
+
+                await sendEmail({
+                    to: ["s.napier00@gmail.com"],
+                    message: {
+                        subject: "Welcome to Evolve!",
+                        html: `${signupInfo.firstName} ${signupInfo.lastName} (${signupInfo.email}) has signed up for Evolve! Please assign them a coach.`
+                    }
+                });
             }
 
-            navigate(getDevOrDepUrl("evolve"));
+            navigate(getDevOrDepUrl("sign"));
         }
     }
     return (
