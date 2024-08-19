@@ -15,7 +15,7 @@ export async function sendEmail(email: emailType, delay: number = 0): Promise<bo
             ccUids: email.ccUids || [],
             delay: delay
         }), {
-            'Content-Type': API.APPLICATION_JSON,
+            'Content-Type': "text/plain",
             'X-CSRFToken': getCookie("csrftoken") || "",
         })
         return true;
