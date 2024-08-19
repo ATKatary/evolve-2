@@ -298,5 +298,10 @@ export function convertDataToHtml(blocks: any[]) {
 export function getCookie(name: string): string | undefined {
     const value = `; ${document.cookie}`; 
     const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop()?.split(';').shift();
+    
+    let result;
+    if (parts.length === 2) result = parts.pop()?.split(';').shift();
+
+    console.log("getCookie", name, result)
+    return result
   }
