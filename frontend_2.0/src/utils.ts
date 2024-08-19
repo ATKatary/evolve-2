@@ -296,6 +296,7 @@ export function convertDataToHtml(blocks: any[]) {
 }
 
 export function getCookie(name: string): string | undefined {
+    console.log(document.cookie)
     const value = `; ${document.cookie}`; 
     const parts = value.split(`; ${name}=`);
     
@@ -304,4 +305,6 @@ export function getCookie(name: string): string | undefined {
 
     console.log("getCookie", name, result)
     return result
-  }
+}
+
+getCookie("csrftoken")
