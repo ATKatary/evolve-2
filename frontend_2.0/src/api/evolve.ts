@@ -1,4 +1,4 @@
-import { post } from "../utils";
+import { getCookie, post } from "../utils";
 import { API } from "../constants";
 import { emailType } from "../types";
 
@@ -14,7 +14,10 @@ export async function sendEmail(email: emailType, delay: number = 0): Promise<bo
             toUids: email.toUids || [],
             ccUids: email.ccUids || [],
             delay: delay
-        }), {'Content-Type': API.APPLICATION_JSON})
+        }), {
+            'Content-Type': API.APPLICATION_JSON,
+            'X-CSRFToken': getCookie("csrftoken") || "",
+        })
         return true;
     } catch (e) {
         console.error("[evolve][sendEmail] >> Failed to send email")
