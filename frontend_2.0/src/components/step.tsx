@@ -19,7 +19,7 @@ import { CheckBoxField } from "../forms/fields";
 import { ControlsArray } from "../support";
 
 function StepComponent(props: stepComponentPropsType) {
-    const {locked, isCoach, sid, edit, step, type, submission, onCheckIn, onSubmit, onUnsubmit, ...domProps} = props;
+    const {locked, isCoach, sid, edit, step, type, submission, onCheckIn, onSubmit, onUnsubmit, onSave, ...domProps} = props;
     const {style, className, ...rest} = domProps;
 
     const [i, setI] = React.useState<number>(0);
@@ -131,9 +131,9 @@ function StepComponent(props: stepComponentPropsType) {
                             :
                             !submission && step.obj?.entries.length? 
                                 <Button 
-                                    onClick={onSubmit}
+                                    onClick={i === step.obj.entries.length - 1? onSubmit : onSave}
                                     sx={{...styles.button(150, submission || isCoach), marginBottom: "20px"}} 
-                                >Submit</Button>
+                                >{i === step.obj.entries.length - 1? "Submit" : "Save"}</Button>
                                 : <></>
                         : <></> 
                     : <></>

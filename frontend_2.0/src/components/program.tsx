@@ -93,10 +93,12 @@ function ProgramNav(props: programNavPropsType) {
             links={program.obj?.modules?.map((module, i) => {
                 const disabled = student?.obj?.programs?.find(p => p.id === program.id)?.accessibleModules?.find(id => id === module.id)? false : true;
                 console.log(`[ProgramNav][${module.id}] (disabled) >> ${disabled}`);
+                
                 return {
                     title: module.title, 
                     onClick: () => setMid(module.id),
                     disabled: isStudent? disabled : false,
+                    style: {backgroundColor: disabled? THEME.BUTTON_ACCENT : THEME.SUCCESS},
                     textStyle: {color: COLORS.WHITE, fontSize: THEME.FONT.SUB_HEADING()},
                 }
             }) || []}

@@ -139,9 +139,9 @@ export function ProgressField({...props}) {
                 sx={{
                     width: "calc(100% - 50px)", 
                     '& .MuiLinearProgress-bar': {
-                        backgroundColor: THEME.DOMINANT
+                        backgroundColor: THEME.BACKGROUND_ACCENT_2
                     }, 
-                    backgroundColor: THEME.BACKGROUND_ACCENT_2
+                    backgroundColor: THEME.DOMINANT
                 }}
             />
             <Typography style={{fontSize: THEME.FONT.PARAGRAPH(), color: THEME.DOMINANT}}>{value*100} %</Typography>

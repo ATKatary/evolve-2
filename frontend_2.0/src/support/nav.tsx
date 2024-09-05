@@ -36,7 +36,7 @@ export function NavArray(props: navArrayPropsType) {
                         seperator=""
                         key={makeId()} 
                         className="flex align-center justify-center"
-                        style={{padding: 0, ...styles.navArrayLink(), ...style}}
+                        style={{padding: 0, ...styles.navArrayLink(!link.disabled), ...style, ...link.style}}
                     />
                 )
             })}

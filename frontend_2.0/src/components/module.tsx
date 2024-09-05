@@ -48,6 +48,33 @@ function ModuleComponent(props: moduleComponentPropsType) {
     const submission = React.useMemo(() => module.obj?.submissions.find(submission => submission.student.id === sid), [sid, module.obj]);
     const locked = React.useMemo(() => isCoach || !submission? false : true, [isCoach, submission, module.obj]);
 
+    const onSave = async () => {
+        if (module.obj) {
+            if (isCoach) {
+                await module.save(updateModule);
+                for (const step of [start, checkIn, actionPlan, end]) {
+                    await step.step.save(updateStep, updateEntry);
+                }
+            } else if (sid) {
+                await loadAndNotify(
+                    async () => {
+                        if (sid) {
+                            for (const step of [start, checkIn, actionPlan, end]) {
+                                await step.step.saveResponses(respondEntry, sid);
+                            }
+                        }
+                    }, 
+                    [], 
+                    loading, 
+                    "Saving responses...",
+                    notification,
+                    "Responses saved!",
+                    "Failed to save responses"
+                )
+            }
+        }
+    }
+
     const onSubmit = React.useMemo(() => async () => {
         const student = (await submitModule({variables: {id: mid, sid: sid}})).data.submitModule.student as studentType;
         if (!isCoach && sid) {
@@ -94,21 +121,11 @@ function ModuleComponent(props: moduleComponentPropsType) {
                 setTitle={(title) => {
                     if (module.obj) module?.setObj({...module.obj, title: title})
                 }}
-                onSave={async () => {
-                    if (module.obj) {
-                        if (isCoach) {
-                            await module.save(updateModule);
-                            for (const step of [start, checkIn, actionPlan, end]) {
-                                await step.step.save(updateStep, updateEntry);
-                            }
-                        } 
-                    }
-                }}
                 controlsStyle={{position: "fixed", right: 100, display: sid? "none" : ""}}
                 style={{marginBottom: 30}}
             >
                 
-                {!isCoach && ((!locked && sti === 0) || sti > 1)?
+                {/* {!isCoach && ((!locked && sti === 0) || sti > 1)?
                     <ControlsArray style={{position: "fixed", right: 100}}>
                         <SaveIcon onClick={async () => {
                             await loadAndNotify(
@@ -130,7 +147,7 @@ function ModuleComponent(props: moduleComponentPropsType) {
                         }}/>
                     </ControlsArray>
                     : <></>
-                }
+                } */}
             </EditableHeader>
             <div className="relative text-center" style={{width: "80%"}}>
                 <Stepper 
@@ -157,6 +174,7 @@ function ModuleComponent(props: moduleComponentPropsType) {
                         edit={edit} 
                         type="start"
                         locked={locked}
+                        onSave={onSave}
                         step={start.step} 
                         isCoach={isCoach} 
                         onSubmit={onSubmit}
@@ -180,6 +198,7 @@ function ModuleComponent(props: moduleComponentPropsType) {
                     <StepComponent 
                         sid={sid} 
                         edit={edit} 
+                        onSave={onSave}
                         isCoach={isCoach} 
                         type="actionPlan"
                         step={actionPlan.step} 
@@ -190,6 +209,7 @@ function ModuleComponent(props: moduleComponentPropsType) {
                         sid={sid} 
                         type="end"
                         edit={edit} 
+                        onSave={onSave}
                         step={end.step} 
                         isCoach={isCoach} 
                     /> : <></>

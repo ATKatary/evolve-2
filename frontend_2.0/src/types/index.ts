@@ -293,6 +293,7 @@ export type stepComponentPropsType = {
     locked?: boolean
     isCoach?: boolean
 
+    onSave?: () => any
     onSubmit?: () => any
     onUnsubmit?: () => any
     onCheckIn?: (event: any, checkedIn: Boolean) => any
