@@ -118,6 +118,7 @@ function ModuleComponent(props: moduleComponentPropsType) {
                 setEditProp={setEdit}
                 disableEditing={!isCoach}
                 title={module.obj?.title || ""} 
+                onSave={isCoach? onSave : undefined}
                 setTitle={(title) => {
                     if (module.obj) module?.setObj({...module.obj, title: title})
                 }}
